@@ -10,58 +10,49 @@
 /*                                                                      */
 /************************************************************************/
 
-//$instruction_set
+$instruction_set = array(
+/* Prace s ramci, volani funkci */
+"MOVE",
+"CREATEFRAME",
+"PUSHFRAME",
+"POPFRAME",
+"DEFVAR",
+"RETURN",
+/* Prace s datovym zasobnikem */
+"PUSHS",
+"POPS",
+/* Aritmeticke, relacni, booleovske a konverzni instrukce */
+"ADD",
+"SUB",
+"MUL",
+"IDIV",
+"LT",
+"GT",
+"EQ",
+"AND",
+"OR",
+"NOT",
+"INT2CHAR",
+"STRI2INT",
+/* Vstupne vystupni instrukce */
+"READ",
+"WRITE",
+/* Prace s retezci */
+"CONCAT",
+"STRLEN",
+"GETCHAR",
+"SETCHAR",
+/* Prace s typy */
+"TYPE",
+/* Instrukce pro rizeni toku programu */
+"LABEL",
+"JUMP",
+"JUMPIFEQ",
+"JUMPIFNEQ",
+"EXIT",
+/* Ladici instrukce */
+"DPRINT",
+"BREAK",
+)
 
-/*
-
-// Prace s ramci, volani funkci
-MOVE
-CREATEFRAME
-PUSHFRAME
-POPFRAME
-DEFVAR
-RETURN
-
-// Prace s datovym zasobnikem
-PUSHS
-POPS
-
-// Aritmeticke, relacni, booleovske a konverzni instrukce
-ADD
-SUB
-MUL
-IDIV
-LT
-GT
-EQ
-AND
-OR
-NOT
-INT2CHAR
-STRI2INT
-
-// Vstupne vystupni instrukce
-READ
-WRITE
-
-// Prace s retezci
-CONCAT
-STRLEN
-GETCHAR
-SETCHAR
-
-// Prace s typy
-TYPE
-
-//Instrukce pro rizeni toku programu
-LABEL
-JUMP
-JUMPIFEQ
-JUMPIFNEQ
-EXIT
-
-//Ladici instrukce
-DPRINT
-BREAK
-*/
 ?>

@@ -11,8 +11,9 @@
 /*                                                                      */
 /************************************************************************/
 
-include 'scanner.php'
-include 'syntax.php'
+include 'lexical_analysis.php'
+include 'syntax_analysis.php'
+include 'instruction_set.php'
 
 /************* DEFINICE ************/
 define("ARGS_CNT", 2);
@@ -28,8 +29,6 @@ enum exit_code : int {
     case INTERN_ERR = 99;
 }
 
-
-
 /************ PARAMETRY ************/
 $shortopts = "h";
 $longopts = array("help");
@@ -40,8 +39,7 @@ if (array_key_exists("help", $options) ||
 
     if ($argc == ARGS_CNT)
     {
-        if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {
-            // TODO do cestiny bez diakritiky
+        if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {            
             echo "parse.php napoveda:\n";
             echo "-h, --help              Vypise tuto napovedu.\n";
             //echo "-v, --verbose         Prints debug information.\n";
@@ -60,6 +58,6 @@ if (array_key_exists("help", $options) ||
     }
 }
 
-
+parser();
 
 ?>
