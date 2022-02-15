@@ -1,17 +1,17 @@
 <?php
 /************************************************************************/
 /*                                                                      */
-/* Soubor: syntax.php                                                   */
-/* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-14                                           */
+/* Soubor: token_type.php                                               */
+/* Vytvoren: 2022-02-15                                                 */
+/* Posledni zmena: 2022-02-15                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
-/* Popis: Skript obsahujici syntaktickou analyzu jazyka IPPcode22       */
+/* Popis: Typy tokenu pro skripty lexikalni a syntakticke analyzy       */ 
 /*                                                                      */
 /************************************************************************/
 
-function parser() {
-    get_instruction();
+enum token : int {
+    case T_EOF = 0;
 }
 
 ?>

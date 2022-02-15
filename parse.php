@@ -3,7 +3,7 @@
 /*                                                                      */
 /* Soubor: parse.php                                                    */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-14                                           */
+/* Posledni zmena: 2022-02-15                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Hlavni skript lexikalni a syntakticke analyzy                 */
@@ -11,23 +11,15 @@
 /*                                                                      */
 /************************************************************************/
 
-include 'lexical_analysis.php'
-include 'syntax_analysis.php'
-include 'instruction_set.php'
+include 'lexical_analysis.php';
+include 'syntax_analysis.php';
+include 'exit_code.php';
+include 'instruction_set.php';
+include 'token_type.php';
 
 /************* DEFINICE ************/
 define("ARGS_CNT", 2);
 define("ARG_IDX", 1);
-
-/*********** CHYBOVE KODY **********/
-enum exit_code : int {
-    case EXIT_SUCCESS = 0;
-    case WRONG_PARAM = 10;    
-    case BAD_HEADER = 21;
-    case BAD_OP_CODE = 22;
-    case LEX_STX_ERR = 23;
-    case INTERN_ERR = 99;
-}
 
 /************ PARAMETRY ************/
 $shortopts = "h";
@@ -37,8 +29,7 @@ $options = getopt($shortopts, $longopts);
 if (array_key_exists("help", $options) ||
     array_key_exists("h", $options)) {
 
-    if ($argc == ARGS_CNT)
-    {
+    if ($argc == ARGS_CNT) {
         if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {            
             echo "parse.php napoveda:\n";
             echo "-h, --help              Vypise tuto napovedu.\n";
