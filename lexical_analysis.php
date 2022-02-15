@@ -12,6 +12,8 @@
 
 /************* DEFINICE ************/
 define("LANGUAGE_ID", ".IPPcode22");
+define("VALID", true);
+define("INVALID", false);
 
 /*
  * Funkce slouzi pro odstraneni jednoradkoveho
@@ -84,7 +86,7 @@ function read_instruction() {
  * @return      V pripade kladne odpovedi true, jinak false
  */ 
 function is_op_code($token) {
-    foreach($instruction_set as $op_code) {
+    foreach(array_keys($instruction_set) as $op_code) {
         if(strcasecmp($op_code, $token) == 0) {
             return true;
         }
@@ -101,7 +103,7 @@ function is_op_code($token) {
  * @return      V pripade kladne odpovedi true, jinak false
  */ 
 function is_data_type($token) {
-    foreach($data_type as $type) {
+    foreach(array_keys($data_type) as $type) {
         if(strcmp($type, $token) == 0) {
             return true;
         }
@@ -146,48 +148,150 @@ function is_var($token) {
 }
 
 /*
+ * Funkce slouzi pro overeni validniho zapisu nazvu promenne
+ * 
+ * @param $var Nazev promenne
+ * @return     V pripade validniho zapisu VALID (true), jinak INVALID (false)
+ */
+function valid_var($var) {
+    $pattern = "~^(GF|LF|TF)@[a-zA-Z_\-$&%*!?][a-zA-Z0-9_\-$&%*!?]*$~";
+
+    if(preg_match($pattern, $var)) {        
+        return VALID;
+    }
+
+    return INVALID;
+}
+
+/*
+ * Funkce slouzi pro overeni validniho zapisu nazvu navesti
+ * 
+ * @param $label Nazev navesti
+ * @return     V pripade validniho zapisu VALID (true), jinak INVALID (false)
+ */
+function valid_label($label) {
+    $pattern = "~^[a-zA-Z_\-$&%*!?][a-zA-Z0-9_\-$&%*!?]*$~";
+
+    if(preg_match($pattern, $label)) {        
+        return VALID;
+    }
+
+    return INVALID;
+}
+
+/*
+ * Funkce slouzi pro overeni validniho zapisu konstanty
+ * 
+ * @param $const Konstanta
+ * @return     V pripade validniho zapisu VALID (true), jinak INVALID (false)
+ */
+function valid_const($const) {
+    $const_parts = explode('#', $const);
+    
+    $const_type = $const_parts[0];
+    $const_val = $const_parts[1];
+
+    if(is_data_type($const_type)) {
+        // TODO jestli nil muze byt hodnotou dalsich datovych typu
+        switch($const_type) {
+            case 'int':
+                pattern = "~^[+-]?[0-9]+$~";
+                break;
+            case 'bool':
+                pattern = "~^(true|false)$~";
+                break;
+            case 'string':
+                // TODO pattern
+                pattern = "";
+                break;
+            case 'nil';
+                pattern = "~^(nil)$~";
+                break;
+        }        
+
+        if(preg_match($pattern, $const)) {        
+            return VALID;
+        }
+    }    
+
+    return INVALID;
+}
+
+/*
  * Funkce provadejici lexikalni analyzu vstupni instrukce
  * 
  * @param $instruction Vstupni instrukce
+ * @return             V pripade validniho zapisu instrukce array(VALID, tokeny instrukce),
+ *                     jinak array(INVALID)
  */ 
-function lexical_analysis($instruction) {    
+function lexical_analysis($instruction) {
+    $lex_status = VALID;
+    $inst_tokens = array();    
+
     foreach($instruction as $token) {
         if(!str_contains($token, '@')) {
             /* Operacni kod, typ, navesti, identifikator jazyka */
             if(is_op_code($token)) {
-
+                array_push($inst_tokens,
+                           token::T_OP_CODE->value,
+                           $instruction_set[$token]);
             } elseif (is_data_type($token)) {
-
+                array_push($inst_tokens,
+                           token::T_TYPE->value,
+                           $data_type[$token]);
             } elseif (is_language_id($token)) {
-
+                array_push($inst_tokens,
+                           token::T_LANGUAGE_ID->value);
             } else {
                 /* Navesti */
+                if(!valid_name($token)) {
+                    return array(INVALID);
+                }
+                
+                array_push($inst_tokens,
+                           token::T_LABEL->value,
+                           $token);
             }
         } else {
             /* Promenna, konstanta */
-            if(is_var($token)) {
+            if(is_var($token)) {                
+                if(!valid_name($token)) {
+                    return array(INVALID);
+                }
 
+                array_push($inst_tokens,
+                           token::T_VAR->value,
+                           $token);
             } else {
                 /* Konstanta */
+                if(!valid_const($token)) {
+                    return array(INVALID);
+                }                
+
+                array_push($inst_tokens,
+                           token::T_CONST->value,
+                           $token);
             }
         }
-    }    
+    }
+    
+    return array(VALID, $inst_tokens);
 }
 
 /*
  * Funkce slouzi pro ziskani instrukce
+ * pro syntakticky analyzator
+ * 
+ * 1. Nacteni vstupni intrukce
+ * 2. Provedeni lexikalni analyzy vstupni instukce
+ * 
+ * @return V pripade validniho zapisu instrukce array(VALID, tokeny instrukce),
+ *         jinak array(INVALID)
  */
 function get_instruction() {    
-    /*
-    while(($instruction = read_instruction()) !== array(0))
-    {
-        var_dump($instruction);
-    }
-    */
-
     $instruction = read_instruction();
-    lexical_analysis($instruction);
-    
+
+    return lexical_analysis($instruction);    
 }
 
 ?>

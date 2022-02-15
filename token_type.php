@@ -10,8 +10,14 @@
 /*                                                                      */
 /************************************************************************/
 
-enum token : int {
-    case T_EOF = 0;
+enum token : int {    
+    case T_OP_CODE     = 0;
+    case T_TYPE        = 1;
+    case T_LANGUAGE_ID = 2;
+    case T_LABEL       = 3;
+    case T_VAR         = 4;
+    case T_CONST       = 5;
+    case T_EOF         = 6;
 }
 
 ?>
