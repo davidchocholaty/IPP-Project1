@@ -11,13 +11,13 @@
 /*                                                                      */
 /************************************************************************/
 
-include 'lexical_analysis.php';
-include 'syntax_analysis.php';
 include 'exit_code.php';
 include 'instruction_set.php';
 include 'token_type.php';
 include 'data_type.php';
 include 'frame_type.php';
+include 'lexical_analysis.php';
+include 'syntax_analysis.php';
 
 /************* DEFINICE ************/
 define("ARGS_CNT", 2);

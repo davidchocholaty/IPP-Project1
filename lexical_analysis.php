@@ -82,10 +82,11 @@ function read_instruction() {
  * Pro operacni kod plati, ze nezalezi
  * na velikosti pismen
  * 
- * @param token Vstupni token
- * @return      V pripade kladne odpovedi true, jinak false
+ * @param $instruction_set Sada instrukci jazyka IPPcode22
+ * @param $token           Vstupni token
+ * @return                 V pripade kladne odpovedi true, jinak false
  */ 
-function is_op_code($token) {
+function is_op_code($instruction_set, $token) {
     foreach(array_keys($instruction_set) as $op_code) {
         if(strcasecmp($op_code, $token) == 0) {
             return true;
@@ -99,10 +100,11 @@ function is_op_code($token) {
  * Funkce slouzi pro urceni, zda dany token
  * je datovy typ
  * 
- * @param token Vstupni token
- * @return      V pripade kladne odpovedi true, jinak false
+ * @param $data_type Datove typy jazyka IPPcode22
+ * @param $token     Vstupni token
+ * @return           V pripade kladne odpovedi true, jinak false
  */ 
-function is_data_type($token) {
+function is_data_type($data_type, $token) {
     foreach(array_keys($data_type) as $type) {
         if(strcmp($type, $token) == 0) {
             return true;
@@ -181,11 +183,12 @@ function valid_label($label) {
 
 /*
  * Funkce slouzi pro overeni validniho zapisu konstanty
- * 
- * @param $const Konstanta
- * @return     V pripade validniho zapisu VALID (true), jinak INVALID (false)
+ *
+ * @param $data_type Datove typy jazyka IPPcode22
+ * @param $const     Konstanta
+ * @return           V pripade validniho zapisu VALID (true), jinak INVALID (false)
  */
-function valid_const($const) {
+function valid_const($data_type, $const) {
     $const_parts = explode('#', $const);
     
     $const_type = $const_parts[0];
@@ -195,17 +198,17 @@ function valid_const($const) {
         // TODO jestli nil muze byt hodnotou dalsich datovych typu
         switch($const_type) {
             case 'int':
-                pattern = "~^[+-]?[0-9]+$~";
+                $pattern = "~^[+-]?[0-9]+$~";
                 break;
             case 'bool':
-                pattern = "~^(true|false)$~";
+                $pattern = "~^(true|false)$~";
                 break;
             case 'string':
                 // TODO pattern
-                pattern = "";
+                $pattern = "";
                 break;
             case 'nil';
-                pattern = "~^(nil)$~";
+                $pattern = "~^(nil)$~";
                 break;
         }        
 
@@ -225,17 +228,20 @@ function valid_const($const) {
  *                     jinak array(INVALID)
  */ 
 function lexical_analysis($instruction) {
+    global $instruction_set;
+    global $data_type;
+
     $lex_status = VALID;
     $inst_tokens = array();    
 
     foreach($instruction as $token) {
         if(!str_contains($token, '@')) {
             /* Operacni kod, typ, navesti, identifikator jazyka */
-            if(is_op_code($token)) {
+            if(is_op_code($instruction_set, $token)) {
                 array_push($inst_tokens,
                            token::T_OP_CODE->value,
                            $instruction_set[$token]);
-            } elseif (is_data_type($token)) {
+            } elseif (is_data_type($data_type, $token)) {
                 array_push($inst_tokens,
                            token::T_TYPE->value,
                            $data_type[$token]);
@@ -264,7 +270,7 @@ function lexical_analysis($instruction) {
                            $token);
             } else {
                 /* Konstanta */
-                if(!valid_const($token)) {
+                if(!valid_const($data_type, $token)) {
                     return array(INVALID);
                 }                
 

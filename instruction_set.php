@@ -3,7 +3,7 @@
 /*                                                                      */
 /* Soubor: instruction_set.php                                          */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-14                                           */
+/* Posledni zmena: 2022-02-15                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Skript obsahujici instrukcni sadu jazyka IPPcode22            */
