@@ -32,7 +32,8 @@ if (array_key_exists("help", $options) ||
     array_key_exists("h", $options)) {
 
     if ($argc == ARGS_CNT) {
-        if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {            
+        if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {       
+            //TODO print echo funkce     
             echo "parse.php napoveda:\n";
             echo "-h, --help              Vypise tuto napovedu.\n";
             //echo "-v, --verbose         Prints debug information.\n";

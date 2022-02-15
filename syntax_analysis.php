@@ -11,7 +11,11 @@
 /************************************************************************/
 
 function parser() {
-    get_instruction();
+    for ($i = 1; $i <= 10; $i++) {
+        $inst = get_instruction();
+        var_dump($inst);
+    }    
+    
 }
 
 ?>

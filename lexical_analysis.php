@@ -58,7 +58,7 @@ function str_2_arr($str) {
  * 
  * @return Nactena instrukce
  */
-function read_instruction() {  
+function read_instruction() {
     while(($input_line = fgets(STDIN)) !== false){
         if (str_starts_with($input_line, '#') ||
             str_starts_with($input_line, '\n')) {
@@ -134,10 +134,11 @@ function is_language_id($token) {
  * Funkce slouzi pro urceni, zda dany token
  * je promenna
  * 
- * @param token Vstupni token
- * @return      V pripade kladne odpovedi true, jinak false
+ * @param $frame_type Typ ramce
+ * @param $token      Vstupni token
+ * @return            V pripade kladne odpovedi true, jinak false
  */ 
-function is_var($token) {
+function is_var($frame_type, $token) {
     $var_frame = explode('@', $token)[0];
 
     foreach($frame_type as $frame) {
@@ -189,13 +190,12 @@ function valid_label($label) {
  * @return           V pripade validniho zapisu VALID (true), jinak INVALID (false)
  */
 function valid_const($data_type, $const) {
-    $const_parts = explode('#', $const);
+    $const_parts = explode('@', $const, 2);
     
     $const_type = $const_parts[0];
     $const_val = $const_parts[1];
 
-    if(is_data_type($const_type)) {
-        // TODO jestli nil muze byt hodnotou dalsich datovych typu
+    if(is_data_type($data_type, $const_type)) {
         switch($const_type) {
             case 'int':
                 $pattern = "~^[+-]?[0-9]+$~";
@@ -204,18 +204,19 @@ function valid_const($data_type, $const) {
                 $pattern = "~^(true|false)$~";
                 break;
             case 'string':
-                // TODO pattern
-                $pattern = "";
+                /* ?! -> negace vyrazu   */
+                //TODO backslash in string
+                $pattern = "~(?!(\\\\[0-9]{0,2}($|\p{L}|\p{M}|\p{S}|\p{P}\p{Z}|\p{C}| )|\\\\[0-9]{4,}))~u";
                 break;
             case 'nil';
                 $pattern = "~^(nil)$~";
                 break;
-        }        
-
-        if(preg_match($pattern, $const)) {        
-            return VALID;
         }
-    }    
+                    
+        if(preg_match($pattern, $const_val)) {        
+            return VALID;
+        }        
+    }
 
     return INVALID;
 }
@@ -230,9 +231,14 @@ function valid_const($data_type, $const) {
 function lexical_analysis($instruction) {
     global $instruction_set;
     global $data_type;
-
-    $lex_status = VALID;
+    global $frame_type;
+    
     $inst_tokens = array();    
+
+    /* EOF */
+    if($instruction[0] == token::T_EOF->value) {
+        return array(VALID, $instruction);
+    }
 
     foreach($instruction as $token) {
         if(!str_contains($token, '@')) {
@@ -250,7 +256,7 @@ function lexical_analysis($instruction) {
                            token::T_LANGUAGE_ID->value);
             } else {
                 /* Navesti */
-                if(!valid_name($token)) {
+                if(!valid_label($token)) {
                     return array(INVALID);
                 }
                 
@@ -260,8 +266,8 @@ function lexical_analysis($instruction) {
             }
         } else {
             /* Promenna, konstanta */
-            if(is_var($token)) {                
-                if(!valid_name($token)) {
+            if(is_var($frame_type, $token)) {                
+                if(!valid_var($token)) {
                     return array(INVALID);
                 }
 
@@ -295,7 +301,7 @@ function lexical_analysis($instruction) {
  *         jinak array(INVALID)
  */
 function get_instruction() {    
-    $instruction = read_instruction();
+    $instruction = read_instruction();    
 
     return lexical_analysis($instruction);    
 }
