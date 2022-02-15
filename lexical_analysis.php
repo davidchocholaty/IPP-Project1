@@ -10,6 +10,9 @@
 /*                                                                      */
 /************************************************************************/
 
+/************* DEFINICE ************/
+define("LANGUAGE_ID", ".IPPcode22");
+
 /*
  * Funkce slouzi pro odstraneni jednoradkoveho
  * komentare nasledujiciho za samotnou instrukci
@@ -72,12 +75,103 @@ function read_instruction() {
 }
 
 /*
+ * Funkce slouzi pro urceni, zda dany token
+ * je operacni kod (nazev instrukce)
+ * Pro operacni kod plati, ze nezalezi
+ * na velikosti pismen
+ * 
+ * @param token Vstupni token
+ * @return      V pripade kladne odpovedi true, jinak false
+ */ 
+function is_op_code($token) {
+    foreach($instruction_set as $op_code) {
+        if(strcasecmp($op_code, $token) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/*
+ * Funkce slouzi pro urceni, zda dany token
+ * je datovy typ
+ * 
+ * @param token Vstupni token
+ * @return      V pripade kladne odpovedi true, jinak false
+ */ 
+function is_data_type($token) {
+    foreach($data_type as $type) {
+        if(strcmp($type, $token) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/*
+ * Funkce slouzi pro urceni, zda dany token
+ * je identifikator jazyka: '.IPPcode22', kdy
+ * nezalezi na velikosti pismen
+ * 
+ * @param token Vstupni token
+ * @return      V pripade kladne odpovedi true, jinak false
+ */ 
+function is_language_id($token) {
+    if(strcasecmp(LANGUAGE_ID, $token) == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+/*
+ * Funkce slouzi pro urceni, zda dany token
+ * je promenna
+ * 
+ * @param token Vstupni token
+ * @return      V pripade kladne odpovedi true, jinak false
+ */ 
+function is_var($token) {
+    $var_frame = explode('@', $token)[0];
+
+    foreach($frame_type as $frame) {
+        if(strcmp($frame, $var_frame) == 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/*
  * Funkce provadejici lexikalni analyzu vstupni instrukce
  * 
  * @param $instruction Vstupni instrukce
  */ 
-function lexical_analysis($instruction) {
+function lexical_analysis($instruction) {    
+    foreach($instruction as $token) {
+        if(!str_contains($token, '@')) {
+            /* Operacni kod, typ, navesti, identifikator jazyka */
+            if(is_op_code($token)) {
 
+            } elseif (is_data_type($token)) {
+
+            } elseif (is_language_id($token)) {
+
+            } else {
+                /* Navesti */
+            }
+        } else {
+            /* Promenna, konstanta */
+            if(is_var($token)) {
+
+            } else {
+                /* Konstanta */
+            }
+        }
+    }    
 }
 
 /*

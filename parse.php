@@ -16,6 +16,8 @@ include 'syntax_analysis.php';
 include 'exit_code.php';
 include 'instruction_set.php';
 include 'token_type.php';
+include 'data_type.php';
+include 'frame_type.php';
 
 /************* DEFINICE ************/
 define("ARGS_CNT", 2);
@@ -38,14 +40,14 @@ if (array_key_exists("help", $options) ||
             //echo "-l, --loc             Saves to statistic file count of instructions.\n";
             //echo "-c, --comments        Saves to statistic file count of comments.\n";
             
-            exit(exit_code::EXIT_SUCCESS->value);            
+            exit(exit_code::EXIT_SUCCESS->value);
         }
         else {
-            exit(exit_code::WRONG_PARAM->value);
+            exit(exit_code::WRONG_PARAM->value);            
         }
     }
-    else {        
-        exit(exit_code::WRONG_PARAM->value);
+    else {
+        exit(exit_code::WRONG_PARAM->value);        
     }
 }
 
