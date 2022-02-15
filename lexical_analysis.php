@@ -206,7 +206,8 @@ function valid_const($data_type, $const) {
             case 'string':
                 /* ?! -> negace vyrazu   */
                 //TODO backslash in string
-                $pattern = "~(?!(\\\\[0-9]{0,2}($|\p{L}|\p{M}|\p{S}|\p{P}\p{Z}|\p{C}| )|\\\\[0-9]{4,}))~u";
+                //$pattern = "~(?!(\\\\[0-9]{0,2}($|\p{L}|\p{M}|\p{S}|\p{P}\p{Z}|\p{C}| )|\\\\[0-9]{4,}))~u";
+                $pattern = "~(?:[^\s#\\\\]|(?:\\\\\d{3}))*~u";
                 break;
             case 'nil';
                 $pattern = "~^(nil)$~";
@@ -233,7 +234,7 @@ function lexical_analysis($instruction) {
     global $data_type;
     global $frame_type;
     
-    $inst_tokens = array();    
+    $inst_tokens = array();
 
     /* EOF */
     if($instruction[0] == token::T_EOF->value) {
@@ -244,25 +245,18 @@ function lexical_analysis($instruction) {
         if(!str_contains($token, '@')) {
             /* Operacni kod, typ, navesti, identifikator jazyka */
             if(is_op_code($instruction_set, $token)) {
-                array_push($inst_tokens,
-                           token::T_OP_CODE->value,
-                           $instruction_set[$token]);
+                array_push($inst_tokens, $token);                           
             } elseif (is_data_type($data_type, $token)) {
-                array_push($inst_tokens,
-                           token::T_TYPE->value,
-                           $data_type[$token]);
+                array_push($inst_tokens, token::T_TYPE->value);                           
             } elseif (is_language_id($token)) {
-                array_push($inst_tokens,
-                           token::T_LANGUAGE_ID->value);
+                array_push($inst_tokens, token::T_LANGUAGE_ID->value);
             } else {
                 /* Navesti */
                 if(!valid_label($token)) {
                     return array(INVALID);
                 }
                 
-                array_push($inst_tokens,
-                           token::T_LABEL->value,
-                           $token);
+                array_push($inst_tokens, token::T_LABEL->value);                           
             }
         } else {
             /* Promenna, konstanta */
@@ -271,18 +265,14 @@ function lexical_analysis($instruction) {
                     return array(INVALID);
                 }
 
-                array_push($inst_tokens,
-                           token::T_VAR->value,
-                           $token);
+                array_push($inst_tokens, token::T_VAR->value);
             } else {
                 /* Konstanta */
                 if(!valid_const($data_type, $token)) {
                     return array(INVALID);
                 }                
 
-                array_push($inst_tokens,
-                           token::T_CONST->value,
-                           $token);
+                array_push($inst_tokens, token::T_CONST->value);                           
             }
         }
     }

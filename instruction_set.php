@@ -11,48 +11,57 @@
 /************************************************************************/
 
 $instruction_set = array(
+/*
+ * Vysvetleni:
+ * v -> var
+ * s -> symb
+ * l -> label
+ * t -> type
+ */ 
+
 /* Prace s ramci, volani funkci */
-'MOVE'        =>  0,
-'CREATEFRAME' =>  1,
-'PUSHFRAME'   =>  2,
-'POPFRAME'    =>  3,
-'DEFVAR'      =>  4,
-'RETURN'      =>  5,
+'MOVE'        => ['v', 's'],
+'CREATEFRAME' => [],
+'PUSHFRAME'   => [],
+'POPFRAME'    => [],
+'DEFVAR'      => ['v'],
+'CALL'        => ['l'],
+'RETURN'      => [],
 /* Prace s datovym zasobnikem */
-'PUSHS'       =>  6,
-'POPS'        =>  7,
+'PUSHS'       => ['s'],
+'POPS'        => ['v'],
 /* Aritmeticke, relacni, booleovske a konverzni instrukce */
-'ADD'         =>  8,
-'SUB'         =>  9,
-'MUL'         => 10,
-'IDIV'        => 11,
-'LT'          => 12,
-'GT'          => 13,
-'EQ'          => 14,
-'AND'         => 15,
-'OR'          => 16,
-'NOT'         => 17,
-'INT2CHAR'    => 18,
-'STRI2INT'    => 19,
+'ADD'         => ['v', 's', 's'],
+'SUB'         => ['v', 's', 's'],
+'MUL'         => ['v', 's', 's'],
+'IDIV'        => ['v', 's', 's'],
+'LT'          => ['v', 's', 's'],
+'GT'          => ['v', 's', 's'],
+'EQ'          => ['v', 's', 's'],
+'AND'         => ['v', 's', 's'],
+'OR'          => ['v', 's', 's'],
+'NOT'         => ['v', 's', 's'],
+'INT2CHAR'    => ['v', 's'],
+'STRI2INT'    => ['v', 's', 's'],
 /* Vstupne vystupni instrukce */
-'READ'        => 20,
-'WRITE'       => 21,
+'READ'        => ['v', 't'],
+'WRITE'       => ['s'],
 /* Prace s retezci */
-'CONCAT'      => 22,
-'STRLEN'      => 23,
-'GETCHAR'     => 24,
-'SETCHAR'     => 25,
+'CONCAT'      => ['v', 's', 's'],
+'STRLEN'      => ['v', 's'],
+'GETCHAR'     => ['v', 's', 's'],
+'SETCHAR'     => ['v', 's', 's'],
 /* Prace s typy */
-'TYPE'        => 26,
+'TYPE'        => ['v', 's'],
 /* Instrukce pro rizeni toku programu */
-'LABEL'       => 27,
-'JUMP'        => 28,
-'JUMPIFEQ'    => 29,
-'JUMPIFNEQ'   => 30,
-'EXIT'        => 31,
+'LABEL'       => ['l'],
+'JUMP'        => ['l'],
+'JUMPIFEQ'    => ['v', 's', 's'],
+'JUMPIFNEQ'   => ['v', 's', 's'],
+'EXIT'        => ['s'],
 /* Ladici instrukce */
-'DPRINT'      => 32,
-'BREAK'       => 33,
+'DPRINT'      => ['s'],
+'BREAK'       => [],
 );
 
 ?>
