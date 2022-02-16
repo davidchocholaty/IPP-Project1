@@ -19,7 +19,23 @@ define("INVALID", false);
 final class Scanner {
     private static $instance = NULL;
 
+    /*
+     * Zabraneni vytvareni vice instanci
+     * s pomoci soukromeho konstruktoru
+     */
     private function __construct() {
+    }
+
+    /*
+     * Zabraneni klonovani instance
+     */
+    private function __clone() {
+    }
+
+    /*
+     * Zabraneni zruseni serializace
+     */
+    public function __wakeup() {        
     }
 
     public static function getInstance() {
@@ -86,10 +102,9 @@ final class Scanner {
                 return self::str2Arr($input_line);            
             }
         }
-        
-        //TODO oop
-        /* EOF */
-        return array(token::T_EOF->value);
+
+        /* EOF */             
+        return array(token_type::T_EOF->value);
     }
 
     /*
@@ -254,26 +269,40 @@ final class Scanner {
         $inst_tokens = array();
 
         /* EOF */
-        if($instruction[0] == token::T_EOF->value) {
-            return array(VALID, $instruction);
+        if($instruction[0] == token_type::T_EOF->value) {
+            $eof = new EndOfFileFactory();
+            $eofToken = $eof->createToken(token_type::T_EOF->value);
+            return array(VALID, array($eofToken));
         }
 
         foreach($instruction as $token) {
             if(!str_contains($token, '@')) {
                 /* Operacni kod, typ, navesti, identifikator jazyka */
                 if(self::isOpCode($instruction_set, $token)) {
-                    array_push($inst_tokens, $token);                           
+                    $opCode = new OpCodeFactory();
+                    $opCodeToken = $opCode->createToken($token);
+                    array_push($inst_tokens, $opCodeToken);          
+
                 } elseif (self::isDataType($data_type, $token)) {
-                    array_push($inst_tokens, token::T_TYPE->value);                           
+                    $operand = new OperandFactory();
+                    $operandToken = $operand->createToken(token_type::T_TYPE->value);
+                    array_push($inst_tokens, $operandToken);                           
+
                 } elseif (self::isLanguageId($token)) {
-                    array_push($inst_tokens, token::T_LANGUAGE_ID->value);
+                    $operand = new OperandFactory();
+                    $operandToken = $operand->createToken(token_type::T_LANGUAGE_ID->value);
+                    array_push($inst_tokens, $operandToken);
+
                 } else {
                     /* Navesti */
                     if(!self::validLabel($token)) {
                         return array(INVALID);
                     }
                     
-                    array_push($inst_tokens, token::T_LABEL->value);                           
+                    $operand = new OperandFactory();
+                    $operandToken = $operand->createToken(token_type::T_LABEL->value);
+                    array_push($inst_tokens, $operandToken);
+
                 }
             } else {
                 /* Promenna, konstanta */
@@ -282,14 +311,20 @@ final class Scanner {
                         return array(INVALID);
                     }
 
-                    array_push($inst_tokens, token::T_VAR->value);
+                    $operand = new OperandFactory();
+                    $operandToken = $operand->createToken(token_type::T_VAR->value);
+                    array_push($inst_tokens, $operandToken);
+
                 } else {
                     /* Konstanta */
                     if(!self::validConst($data_type, $token)) {
                         return array(INVALID);
                     }                
 
-                    array_push($inst_tokens, token::T_CONST->value);                           
+                    $operand = new OperandFactory();
+                    $operandToken = $operand->createToken(token_type::T_CONST->value);
+                    array_push($inst_tokens, $operandToken); 
+
                 }
             }
         }
