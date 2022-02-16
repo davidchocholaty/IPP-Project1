@@ -13,9 +13,8 @@
 /* Navrhovy vzor Singleton */
 final class Parser {
     private static $instance = NULL;
-    
-    private function __construct() {
 
+    private function __construct() {
     }
 
     public static function getInstance() {

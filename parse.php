@@ -23,6 +23,9 @@ include 'syntax_analysis.php';
 define("ARGS_CNT", 2);
 define("ARG_IDX", 1);
 
+/*
+ * Funkce slouzi pro vypis napovedy na standardni vystup
+ */
 function print_help() {
     //TODO print echo funkce     
     echo "parse.php napoveda:\n";
@@ -43,8 +46,7 @@ if (array_key_exists("help", $options) ||
 
     if ($argc == ARGS_CNT) {
         if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {       
-            print_help();
-            
+            print_help();            
             exit(exit_code::EXIT_SUCCESS->value);
         }
         else {
