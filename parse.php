@@ -13,7 +13,7 @@
 
 include 'exit_code.php';
 include 'instruction_set.php';
-include 'token_type.php';
+include 'token.php';
 include 'data_type.php';
 include 'frame_type.php';
 include 'lexical_analysis.php';
@@ -22,6 +22,16 @@ include 'syntax_analysis.php';
 /************* DEFINICE ************/
 define("ARGS_CNT", 2);
 define("ARG_IDX", 1);
+
+function print_help() {
+    //TODO print echo funkce     
+    echo "parse.php napoveda:\n";
+    echo "-h, --help              Vypise tuto napovedu.\n";
+    //echo "-v, --verbose         Prints debug information.\n";
+    //echo "-s FILE, --stats FILE Select file for statistics. One of the following parameters is required.\n";
+    //echo "-l, --loc             Saves to statistic file count of instructions.\n";
+    //echo "-c, --comments        Saves to statistic file count of comments.\n";
+}
 
 /************ PARAMETRY ************/
 $shortopts = "h";
@@ -33,13 +43,7 @@ if (array_key_exists("help", $options) ||
 
     if ($argc == ARGS_CNT) {
         if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {       
-            //TODO print echo funkce     
-            echo "parse.php napoveda:\n";
-            echo "-h, --help              Vypise tuto napovedu.\n";
-            //echo "-v, --verbose         Prints debug information.\n";
-            //echo "-s FILE, --stats FILE Select file for statistics. One of the following parameters is required.\n";
-            //echo "-l, --loc             Saves to statistic file count of instructions.\n";
-            //echo "-c, --comments        Saves to statistic file count of comments.\n";
+            print_help();
             
             exit(exit_code::EXIT_SUCCESS->value);
         }
@@ -52,6 +56,7 @@ if (array_key_exists("help", $options) ||
     }
 }
 
-parser();
+$parser = Parser::getInstance();
+$parser->parse();
 
 ?>
