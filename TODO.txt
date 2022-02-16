@@ -1,1 +1,16 @@
 token OOP
+
+Mozne navrhove vzory:
+https://cs.wikipedia.org/wiki/Singleton
+https://cs.wikipedia.org/wiki/Abstraktn%C3%AD_tov%C3%A1rna
+https://cs.wikipedia.org/wiki/Builder
+https://cs.wikipedia.org/wiki/Prototyp_(n%C3%A1vrhov%C3%BD_vzor)
+https://cs.wikipedia.org/wiki/Multiton
+https://cs.wikipedia.org/wiki/Adapt%C3%A9r_(n%C3%A1vrhov%C3%BD_vzor)
+https://cs.wikipedia.org/wiki/Fas%C3%A1da_(n%C3%A1vrhov%C3%BD_vzor)
+https://cs.wikipedia.org/wiki/Composite
+https://cs.wikipedia.org/wiki/Strategy
+https://cs.wikipedia.org/wiki/Observer_(n%C3%A1vrhov%C3%BD_vzor)
+
+good stranka:
+https://sourcemaking.com/design_patterns/singleton
