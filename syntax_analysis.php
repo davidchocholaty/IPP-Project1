@@ -52,71 +52,76 @@ final class Parser {
      * Metoda provadejici syntaktickou analyzu vstupnich instrukci
      */
     public function parse() {        
-        /*
-        for ($i = 1; $i <= 10; $i++) {
-            $inst = get_instruction();
-            var_dump($inst);
+        $scanner = Scanner::getInstance();
+
+        $instruction = $scanner->getInstruction();
+        $instTokens = $instruction->getInstTokens();
+
+        if($instTokens[0]->getToken() !== TokenType::T_LANGUAGE_ID->value) {
+            // TODO error
         }
-        */
-        
-        $scanner = Scanner::getInstance();        
 
         while(true) {
             $instruction = $scanner->getInstruction();
-            $instVals = $instruction->getInstTokens();
+            $instTokens = $instruction->getInstTokens();                        
             
-            if($instruction->getStatus() == INVALID) {
+            if($instruction->getStatus() == INVALID) {                
                 break;
-            } elseif($instVals[0]->getToken() == TokenType::T_EOF->value) {
+            } elseif(strcmp($instTokens[0]->getType(), 'EOF') == 0) {                
                 break;
-            } elseif($instVals[0]->getToken() == TokenType::T_LANGUAGE_ID->value) {
-                continue;
-            }
-    
-            var_dump($instruction);
-    
-            /* instruction[1][0] -> Prvni cast instrukce je operacni kod */        
-           // $inst_operands = $instructionSet[$instruction[1][0]];
-    /*
-            $inst_ops_len = count($inst_operands);
-    
-            // Nespravny pocet operandu
-            if($inst_ops_len !== count($instruction[1])-1){
+            } elseif(strcmp($instTokens[0]->getType(), 'OPCODE') !== 0) {
                 //TODO error
             }
-    */
-            //var_dump($inst_operands);
-    /*
-            $inst_idx = 1;
-    
-            foreach($inst_operands as $operand) {
+
+            //var_dump($instruction);
+
+            /* Prvni cast instrukce je operacni kod */
+            $instOpCodeIdx = $instTokens[0]->getToken();
+
+            $instOpCode = InstructionSet::$instructionCodes[$instOpCodeIdx];
+            $instOperands = InstructionSet::$instructionSet[$instOpCode];
+           
+            /* Nespravny pocet operandu */
+
+            if(count($instOperands) !== count($instTokens) - 1) {
+                //TODO error
+            }
+
+            $operandIdx = 1;
+
+            foreach($instOperands as $operand) {
+                $operandToken = $instTokens[$operandIdx]->getToken();
+
+                if(strcmp($operandToken, 'OPERAND') !== 0) {
+                    //TODO error
+                }
+
                 switch($operand) {
-                    case 'v': // var   
-                        if($instruction[1][$inst_idx] != token::T_VAR->value) {
+                    case 'v': // var
+                        if($operandToken != TokenType::T_VAR->value) {
                             // TODO error
                         }
                         break;
                     case 's': // symb  
-                        if($instruction[1][$inst_idx] != token::T_VAR->value &&
-                           $instruction[1][$inst_idx] != token::T_CONST->value) {
+                        if($operandToken != TokenType::T_VAR->value &&
+                           $operandToken != TokenType::T_CONST->value) {
                             // TODO error
                         }
                         break;
                     case 'l': // label 
-                        if($instruction[1][$inst_idx] != token::T_LABEL->value) {
+                        if($operandToken != TokenType::T_LABEL->value) {
                             // TODO error
                         }
                         break;                    
                     case 't': // type  
-                        if($instruction[1][$inst_idx] != token::T_TYPE->value) {
+                        if($operandToken != TokenType::T_TYPE->value) {
                             // TODO error
                         }
                         break;
                 }
-    
-                $inst_idx++;
-            }
-            */
+
+                $operandIdx++;
+            }                
         }
     }
 }

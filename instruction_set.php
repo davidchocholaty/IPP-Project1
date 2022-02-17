@@ -13,7 +13,55 @@
 /*
  * Trida reprezentujici instrukcni sadu
  */
-final class InstructionSet {    
+final class InstructionSet {
+    /********* KODY INSTRUKCI **********/
+    public static $instructionCodes = array (
+        /* Prace s ramci, volani funkci */
+         0 => 'MOVE',
+         1 => 'CREATEFRAME',
+         2 => 'PUSHFRAME',
+         3 => 'POPFRAME',
+         4 => 'DEFVAR',
+         5 => 'CALL',
+         6 => 'RETURN',
+        /* Prace s datovym zasobnikem */
+         7 => 'PUSHS',
+         8 => 'POPS',
+        /* Aritmeticke, relacni, booleovske a konverzni instrukce */
+         9 => 'ADD',
+        10 => 'SUB',
+        11 => 'MUL',
+        12 => 'IDIV',
+        13 => 'LT',
+        14 => 'GT',
+        15 => 'EQ',
+        16 => 'AND',
+        17 => 'OR',
+        18 => 'NOT',
+        19 => 'INT2CHAR',
+        20 => 'STRI2INT',
+        /* Vstupne vystupni instrukce */
+        21 => 'READ',
+        22 => 'WRITE',
+        /* Prace s retezci */
+        23 => 'CONCAT',
+        24 => 'STRLEN',
+        25 => 'GETCHAR',
+        26 => 'SETCHAR',
+        /* Prace s typy */
+        27 => 'TYPE',
+        /* Instrukce pro rizeni toku programu */
+        28 => 'LABEL',
+        29 => 'JUMP',
+        30 => 'JUMPIFEQ',
+        31 => 'JUMPIFNEQ',
+        32 => 'EXIT',
+        /* Ladici instrukce */
+        33 => 'DPRINT',
+        34 => 'BREAK',
+    );
+
+
     /********* INSTRUKCNI SADA *********/
     public static $instructionSet = array(
     /*

@@ -59,8 +59,7 @@ final class Scanner {
      *                     se statusem INVALID     
      */    
     private static function lexicalAnalysis($instruction) {                
-        $inst_tokens = array();
-        $inst_set_keys = array_keys(InstructionSet::$instructionSet);        
+        $instTokens = array();        
 
         /* EOF */
         if($instruction[0] == TokenType::T_EOF->value) {            
@@ -79,30 +78,29 @@ final class Scanner {
                  * Identifikator jazyka
                  * Navesti
                  */
-                if(TokenUtil::isOpCode(InstructionSet::$instructionSet, $token)) {
+                if(TokenUtil::isOpCode(InstructionSet::$instructionCodes, $token)) {                    
                     /* Operacni kod */
 
-                    /* Ziskani indexu instrukce v instrukcni sade*/                    
-                    $opCodeIdx = array_search($token, $inst_set_keys);
-
+                    /* Ziskani indexu (kodu) instrukce v instrukcni sade*/
+                    $opCodeIdx = array_search($token, InstructionSet::$instructionCodes);
                     $opCodeToken = $opCode->createToken($opCodeIdx);
-                    array_push($inst_tokens, $opCodeToken);          
+                    array_push($instTokens, $opCodeToken);          
                 } elseif (TokenUtil::isDataType(DataType::$dataType, $token)) {
                     /* Typ */
                     $operandToken = $operand->createToken(TokenType::T_TYPE->value);
-                    array_push($inst_tokens, $operandToken);                           
+                    array_push($instTokens, $operandToken);                           
                 } elseif (TokenUtil::isLanguageId($token)) {                    
                     /* Identifikator jazyka */
                     $operandToken = $operand->createToken(TokenType::T_LANGUAGE_ID->value);
-                    array_push($inst_tokens, $operandToken);
+                    array_push($instTokens, $operandToken);
                 } else {
                     /* Navesti */
-                    if(!TokenUtil::validLabel($token)) {                        
+                    if(!TokenUtil::validLabel($token)) {                            
                         return new Instruction(INVALID);
                     }
                                         
                     $operandToken = $operand->createToken(TokenType::T_LABEL->value);
-                    array_push($inst_tokens, $operandToken);
+                    array_push($instTokens, $operandToken);
                 }
             } else {
                 /* 
@@ -111,25 +109,25 @@ final class Scanner {
                  */
                 if(TokenUtil::isVar(FrameType::$frameType, $token)) {
                     /* Promenna */               
-                    if(!TokenUtil::validVar($token)) {
+                    if(!TokenUtil::validVar($token)) {                        
                         return new Instruction(INVALID);
                     }
                     
                     $operandToken = $operand->createToken(TokenType::T_VAR->value);
-                    array_push($inst_tokens, $operandToken);
+                    array_push($instTokens, $operandToken);
                 } else {
                     /* Konstanta */
-                    if(!TokenUtil::validConst(DataType::$dataType, $token)) {
+                    if(!TokenUtil::validConst(DataType::$dataType, $token)) {                        
                         return new Instruction(INVALID);
                     }                
                     
                     $operandToken = $operand->createToken(TokenType::T_CONST->value);
-                    array_push($inst_tokens, $operandToken); 
+                    array_push($instTokens, $operandToken); 
                 }
             }
         }
-                
-        return new Instruction(VALID, $inst_tokens);
+        
+        return new Instruction(VALID, $instTokens);
     }
 
     /*
@@ -143,9 +141,9 @@ final class Scanner {
      *         se statusem VALID a polem obsahujicim tokeny instrukce
      *     
      *         V pripade nevalidniho zapisu instanci tridy Instuction
-     *         se statusem INVALID  
+     *         se statusem INVALID
      */
-    public function getInstruction() {
+    public function getInstruction() {        
         $instruction = StringUtil::readInstruction();
 
         return self::lexicalAnalysis($instruction);

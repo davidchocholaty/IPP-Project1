@@ -17,13 +17,13 @@ class TokenUtil {
      * Pro operacni kod plati, ze nezalezi
      * na velikosti pismen
      * 
-     * @param $instructionSet Sada instrukci jazyka IPPcode22
-     * @param $token           Vstupni token
-     * @return                 V pripade kladne odpovedi true, jinak false
+     * @param $instructionCodes Sada kodu instrukci jazyka IPPcode22
+     * @param $token            Vstupni token
+     * @return                  V pripade kladne odpovedi true, jinak false
      */ 
-    public static function isOpCode($instructionSet, $token) {
-        foreach(array_keys($instructionSet) as $op_code) {
-            if(strcasecmp($op_code, $token) == 0) {
+    public static function isOpCode($instructionCodes, $token) {
+        foreach($instructionCodes as $opCode) {
+            if(strcasecmp($opCode, $token) == 0) {
                 return true;
             }
         }
@@ -74,10 +74,10 @@ class TokenUtil {
      * @return            V pripade kladne odpovedi true, jinak false
      */ 
     public static function isVar($frameType, $token) {
-        $var_frame = explode('@', $token)[0];
+        $varFrame = explode('@', $token)[0];
 
         foreach($frameType as $frame) {
-            if(strcmp($frame, $var_frame) == 0) {
+            if(strcmp($frame, $varFrame) == 0) {
                 return true;
             }
         }
@@ -125,13 +125,13 @@ class TokenUtil {
      * @return           V pripade validniho zapisu VALID (true), jinak INVALID (false)
      */
     public static function validConst($dataType, $const) {
-        $const_parts = explode('@', $const, 2);
+        $constParts = explode('@', $const, 2);
         
-        $const_type = $const_parts[0];
-        $const_val = $const_parts[1];
+        $constType = $constParts[0];
+        $constVal = $constParts[1];
 
-        if(self::isDataType($dataType, $const_type)) {
-            switch($const_type) {
+        if(self::isDataType($dataType, $constType)) {
+            switch($constType) {
                 case 'int':
                     $pattern = "~^[+-]?[0-9]+$~";
                     break;
@@ -149,7 +149,7 @@ class TokenUtil {
                     break;
             }
                         
-            if(preg_match($pattern, $const_val)) {        
+            if(preg_match($pattern, $constVal)) {        
                 return VALID;
             }        
         }

@@ -12,8 +12,8 @@
 /************************************************************************/
 
 include 'exit_code.php';
-include 'definitions.php';
 include 'instruction_set.php';
+include 'definitions.php';
 include 'token.php';
 include 'token_type.php';
 include 'data_type.php';
@@ -27,7 +27,7 @@ include 'syntax_analysis.php';
 /*
  * Funkce slouzi pro vypis napovedy na standardni vystup
  */
-function print_help() {
+function printHelp() {
     //TODO print echo Metoda     
     echo "parse.php napoveda:\n";
     echo "-h, --help              Vypise tuto napovedu.\n";
@@ -49,7 +49,7 @@ if (array_key_exists("help", $options) ||
 
     if ($argc == ARGS_CNT) {
         if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {       
-            print_help();            
+            printHelp();            
             exit(ExitCode::EXIT_SUCCESS->value);
         }
         else {

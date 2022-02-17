@@ -18,25 +18,25 @@ class StringUtil {
      * Metoda slouzi pro odstraneni jednoradkoveho
      * komentare nasledujiciho za samotnou instrukci
      * 
-     * @params $input_line Vstupni radek
+     * @params $inputLine Vstupni radek
      * @return             Vstupni radek bez komentare
      */
-    private static function removeComment($input_line) {
-        return explode('#', $input_line)[0];
+    private static function removeComment($inputLine) {
+        return explode('#', $inputLine)[0];
     }
 
     /*
      * Metoda slouzi pro odstraneni znaku noveho
      * radku nebo bilych znaku na konci vstupniho radku
      * 
-     * @param $input line Vstupni radek obsahujici znak noveho radku
+     * @param $inputLine Vstupni radek obsahujici znak noveho radku
      * @return            Vstupni radek bez znaku noveho radku
      */
-    private static function trimLineEnd($input_line) {
-        $no_new_line = rtrim($input_line, "\n");
-        $no_white_spaces = rtrim($input_line);
+    private static function trimLineEnd($inputLine) {
+        $noNewLine = rtrim($inputLine, "\n");
+        $noWhiteSpaces = rtrim($inputLine);
         
-        return $no_white_spaces;
+        return $noWhiteSpaces;
     }
 
     /*
@@ -58,16 +58,16 @@ class StringUtil {
      * @return Nactena instrukce
      */
     public static function readInstruction() {
-        while(($input_line = fgets(STDIN)) !== false){
-            if (str_starts_with($input_line, '#') ||
-                str_starts_with($input_line, '\n')) {
+        while(($inputLine = fgets(STDIN)) !== false){
+            if (str_starts_with($inputLine, '#') ||
+                str_starts_with($inputLine, '\n')) {
 
                 continue;
             } else {
-                $input_line = self::removeComment($input_line);
-                $input_line = self::trimLineEnd($input_line);
+                $inputLine = self::removeComment($inputLine);
+                $inputLine = self::trimLineEnd($inputLine);
 
-                return self::str2Arr($input_line);            
+                return self::str2Arr($inputLine);
             }
         }
 
