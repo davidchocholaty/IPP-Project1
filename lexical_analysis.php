@@ -268,6 +268,8 @@ final class Scanner {
         
         $inst_tokens = array();
 
+        $inst_set_keys = array_keys($instruction_set);        
+
         /* EOF */
         if($instruction[0] == token_type::T_EOF->value) {
             $eof = new EndOfFileFactory();
@@ -275,34 +277,30 @@ final class Scanner {
             return array(VALID, array($eofToken));
         }
 
+        $opCode = new OpCodeFactory();
+        $operand = new OperandFactory();
+
         foreach($instruction as $token) {
             if(!str_contains($token, '@')) {
                 /* Operacni kod, typ, navesti, identifikator jazyka */
                 if(self::isOpCode($instruction_set, $token)) {
-                    $opCode = new OpCodeFactory();
-                    $opCodeToken = $opCode->createToken($token);
+                    $opCodeIdx = array_search($token, $inst_set_keys);
+                    $opCodeToken = $opCode->createToken($opCodeIdx);
                     array_push($inst_tokens, $opCodeToken);          
-
-                } elseif (self::isDataType($data_type, $token)) {
-                    $operand = new OperandFactory();
+                } elseif (self::isDataType($data_type, $token)) {                    
                     $operandToken = $operand->createToken(token_type::T_TYPE->value);
                     array_push($inst_tokens, $operandToken);                           
-
-                } elseif (self::isLanguageId($token)) {
-                    $operand = new OperandFactory();
+                } elseif (self::isLanguageId($token)) {                    
                     $operandToken = $operand->createToken(token_type::T_LANGUAGE_ID->value);
                     array_push($inst_tokens, $operandToken);
-
                 } else {
                     /* Navesti */
                     if(!self::validLabel($token)) {
                         return array(INVALID);
                     }
-                    
-                    $operand = new OperandFactory();
+                                        
                     $operandToken = $operand->createToken(token_type::T_LABEL->value);
                     array_push($inst_tokens, $operandToken);
-
                 }
             } else {
                 /* Promenna, konstanta */
@@ -310,21 +308,17 @@ final class Scanner {
                     if(!self::validVar($token)) {
                         return array(INVALID);
                     }
-
-                    $operand = new OperandFactory();
+                    
                     $operandToken = $operand->createToken(token_type::T_VAR->value);
                     array_push($inst_tokens, $operandToken);
-
                 } else {
                     /* Konstanta */
                     if(!self::validConst($data_type, $token)) {
                         return array(INVALID);
                     }                
-
-                    $operand = new OperandFactory();
+                    
                     $operandToken = $operand->createToken(token_type::T_CONST->value);
                     array_push($inst_tokens, $operandToken); 
-
                 }
             }
         }

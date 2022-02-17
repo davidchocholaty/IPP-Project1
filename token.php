@@ -21,11 +21,12 @@ enum token_type : int {
 
 
 /* Navrhovy vzor Abstraktni tovarna */
-
 abstract class Token {
     private $token;
 
-    public function __construct($token) {
+    abstract function getTokenType();
+
+    public function __construct(int $token) {
         $this->token = $token;
     }
 
@@ -35,41 +36,53 @@ abstract class Token {
 }
 
 class OpCode extends Token {
-    public function __construct($opCode){
+    public function __construct(int $opCode){
         parent::__construct($opCode);        
-    }    
-}
+    }
 
-class Operand extends Token {
-    public function __construct($operand){
-        parent::__construct($operand);        
+    public function getTokenType() {
+        return 'OPCODE';
     }
 }
 
-class EndOfFile extends Token {
-    public function __construct($eof){
+class Operand extends Token {
+    public function __construct(int $operand){
+        parent::__construct($operand);        
+    }
+
+    public function getTokenType() {
+        return 'OPERAND';
+    }
+}
+
+class EndOfFile extends Token {    
+    public function __construct(int $eof){
         parent::__construct($eof);        
+    }
+
+    public function getTokenType() {
+        return 'EOF';
     }
 }
 
 abstract class TokenFactory {
-    abstract public function createToken($token) : Token;
+    abstract public function createToken(int $token) : Token;
 }
 
 class OpCodeFactory extends TokenFactory {
-    public function createToken($token) : Token {
+    public function createToken(int $token) : Token {
         return new OpCode($token);
     }
 }
 
 class OperandFactory extends TokenFactory {
-    public function createToken($token) : Token {
+    public function createToken(int $token) : Token {
         return new Operand($token);
     }
 }
 
 class EndOfFileFactory extends TokenFactory {
-    public function createToken($token) : Token {
+    public function createToken(int $token) : Token {
         return new EndOfFile($token);
     }
 }
