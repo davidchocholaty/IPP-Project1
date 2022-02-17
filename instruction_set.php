@@ -3,17 +3,26 @@
 /*                                                                      */
 /* Soubor: instruction_set.php                                          */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-15                                           */
+/* Posledni zmena: 2022-02-17                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Skript obsahujici instrukcni sadu jazyka IPPcode22            */
 /*                                                                      */
 /************************************************************************/
 
-final class InstructionSet {
+/*
+ * Trida reprezentujici instrukcni sadu
+ */
+final class InstructionSet {    
+    /********* INSTRUKCNI SADA *********/
     public static $instructionSet = array(
     /*
-     * Vysvetleni:
+     * Z duvodu zabraneni mnoha porovnavani celych
+     * retezcu jsou typy operandu znaceny pouze
+     * znakem reprezentujicim pocatecni pismeno
+     * nazvu daneho typu operandu
+     *  
+     * Vyznam:
      * v -> var
      * s -> symb
      * l -> label

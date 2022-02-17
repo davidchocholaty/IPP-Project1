@@ -1,5 +1,3 @@
-TODO lexical_analysis -> lexicalAnalysis
-
 Mozne navrhove vzory:
 https://cs.wikipedia.org/wiki/Prototyp_(n%C3%A1vrhov%C3%BD_vzor)
 https://cs.wikipedia.org/wiki/Fas%C3%A1da_(n%C3%A1vrhov%C3%BD_vzor)

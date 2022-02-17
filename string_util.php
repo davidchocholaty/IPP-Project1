@@ -1,18 +1,21 @@
 <?php
 /************************************************************************/
 /*                                                                      */
-/* Soubor: exit_code.php                                                */
+/* Soubor: string_util.php                                              */
 /* Vytvoren: 2022-02-15                                                 */
-/* Posledni zmena: 2022-02-15                                           */
+/* Posledni zmena: 2022-02-17                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
-/* Popis: Chybove kody pro skripty lexikalni a syntakticke analyzy      */ 
+/* Popis: Skript se tridou obsahujici metody pro praci s retezci        */ 
 /*                                                                      */
 /************************************************************************/
 
+/*
+ * Trida pro praci s retezci
+ */ 
 class StringUtil {
     /*
-     * Funkce slouzi pro odstraneni jednoradkoveho
+     * Metoda slouzi pro odstraneni jednoradkoveho
      * komentare nasledujiciho za samotnou instrukci
      * 
      * @params $input_line Vstupni radek
@@ -23,7 +26,7 @@ class StringUtil {
     }
 
     /*
-     * Funkce slouzi pro odstraneni znaku noveho
+     * Metoda slouzi pro odstraneni znaku noveho
      * radku nebo bilych znaku na konci vstupniho radku
      * 
      * @param $input line Vstupni radek obsahujici znak noveho radku
@@ -37,7 +40,7 @@ class StringUtil {
     }
 
     /*
-     * Funkce prevede vstupni retezec na pole obsahujici
+     * Metoda prevede vstupni retezec na pole obsahujici
      * jednotliva slova retezce (tokeny)
      * Pritom jsou ignorovany vsechny bile znaky
      * 
@@ -49,7 +52,7 @@ class StringUtil {
     }
 
     /*
-     * Funkce slouzi pro nacteni jedne instrukce ze vstupu
+     * Metoda slouzi pro nacteni jedne instrukce ze vstupu
      * Pritom jsou ignorovany komentare, prazdne radky a bile znaky
      * 
      * @return Nactena instrukce

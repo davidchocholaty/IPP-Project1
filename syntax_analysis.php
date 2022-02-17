@@ -1,16 +1,20 @@
 <?php
 /************************************************************************/
 /*                                                                      */
-/* Soubor: syntax.php                                                   */
+/* Soubor: syntax_analysis.php                                          */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-14                                           */
+/* Posledni zmena: 2022-02-17                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Skript obsahujici syntaktickou analyzu jazyka IPPcode22       */
 /*                                                                      */
 /************************************************************************/
 
-/* Navrhovy vzor Singleton */
+/*
+ * Trida reprezentujici syntakticky analyzator
+ * 
+ * Pouziti navrhovy vzor: Singleton
+ */
 final class Parser {
     private static $instance = NULL;
 
@@ -33,6 +37,9 @@ final class Parser {
     public function __wakeup() {        
     }
 
+    /*
+     * Metoda pro vytvoreni/ziskani instance
+     */ 
     public static function getInstance() {
         if(self::$instance == NULL) {
             self::$instance = new Parser();
@@ -41,6 +48,9 @@ final class Parser {
         return self::$instance;
     }
 
+    /*
+     * Metoda provadejici syntaktickou analyzu vstupnich instrukci
+     */
     public function parse() {        
         /*
         for ($i = 1; $i <= 10; $i++) {
@@ -49,16 +59,17 @@ final class Parser {
         }
         */
         
-        $scanner = Scanner::getInstance();
+        $scanner = Scanner::getInstance();        
 
         while(true) {
             $instruction = $scanner->getInstruction();
+            $instVals = $instruction->getInstTokens();
             
-            if($instruction[0] == INVALID) {
+            if($instruction->getStatus() == INVALID) {
                 break;
-            } elseif($instruction[1][0]->getToken() == TokenType::T_EOF->value) {
+            } elseif($instVals[0]->getToken() == TokenType::T_EOF->value) {
                 break;
-            } elseif($instruction[1][0]->getToken() == TokenType::T_LANGUAGE_ID->value) {
+            } elseif($instVals[0]->getToken() == TokenType::T_LANGUAGE_ID->value) {
                 continue;
             }
     

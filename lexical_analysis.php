@@ -1,21 +1,20 @@
 <?php
 /************************************************************************/
 /*                                                                      */
-/* Soubor: scanner.php                                                  */
+/* Soubor: lexical_analysis.php                                         */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-15                                           */
+/* Posledni zmena: 2022-02-17                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
-/* Popis: Skript obsahujici syntaktickou analyzu jazyka IPPcode22       */
+/* Popis: Skript obsahujici lexikalni analyzu jazyka IPPcode22          */
 /*                                                                      */
 /************************************************************************/
 
-/************* DEFINICE ************/
-define("LANGUAGE_ID", ".IPPcode22");
-define("VALID", true);
-define("INVALID", false);
-
-/* Navrhovy vzor Singleton */
+/*
+ * Trida reprezentujici lexikalni analyzator
+ * 
+ * Pouziti navrhovy vzor: Singleton
+ */
 final class Scanner {
     private static $instance = NULL;
 
@@ -38,6 +37,9 @@ final class Scanner {
     public function __wakeup() {        
     }
 
+    /*
+     * Metoda pro vytvoreni/ziskani instance
+     */ 
     public static function getInstance() {
         if(self::$instance == NULL) {
             self::$instance = new Scanner();
@@ -47,23 +49,23 @@ final class Scanner {
     }
 
     /*
-     * Funkce provadejici lexikalni analyzu vstupni instrukce
+     * Metoda provadejici lexikalni analyzu vstupni instrukce
      * 
      * @param $instruction Vstupni instrukce
-     * @return             V pripade validniho zapisu instrukce array(VALID, tokeny instrukce),
-     *                     jinak array(INVALID)
-     */ 
-    //TODO oop
+     * @return             V pripade validniho zapisu instanci tridy Instruction 
+     *                     se statusem VALID a polem obsahujicim tokeny instrukce
+     *     
+     *                     V pripade nevalidniho zapisu instanci tridy Instuction
+     *                     se statusem INVALID     
+     */    
     private static function lexicalAnalysis($instruction) {                
         $inst_tokens = array();
-
         $inst_set_keys = array_keys(InstructionSet::$instructionSet);        
 
         /* EOF */
-        if($instruction[0] == TokenType::T_EOF->value) {
-            $eof = new EndOfFileFactory();
-            $eofToken = $eof->createToken(TokenType::T_EOF->value);
-            return array(VALID, array($eofToken));
+        if($instruction[0] == TokenType::T_EOF->value) {            
+            $eofToken = new EndOfFile(TokenType::T_EOF->value);
+            return new Instruction(VALID, array($eofToken));
         }
 
         $opCode = new OpCodeFactory();
@@ -71,31 +73,46 @@ final class Scanner {
 
         foreach($instruction as $token) {
             if(!str_contains($token, '@')) {
-                /* Operacni kod, typ, navesti, identifikator jazyka */
+                /* 
+                 * Operacni kod
+                 * Typ
+                 * Identifikator jazyka
+                 * Navesti
+                 */
                 if(TokenUtil::isOpCode(InstructionSet::$instructionSet, $token)) {
+                    /* Operacni kod */
+
+                    /* Ziskani indexu instrukce v instrukcni sade*/                    
                     $opCodeIdx = array_search($token, $inst_set_keys);
+
                     $opCodeToken = $opCode->createToken($opCodeIdx);
                     array_push($inst_tokens, $opCodeToken);          
-                } elseif (TokenUtil::isDataType(DataType::$dataType, $token)) {                    
+                } elseif (TokenUtil::isDataType(DataType::$dataType, $token)) {
+                    /* Typ */
                     $operandToken = $operand->createToken(TokenType::T_TYPE->value);
                     array_push($inst_tokens, $operandToken);                           
                 } elseif (TokenUtil::isLanguageId($token)) {                    
+                    /* Identifikator jazyka */
                     $operandToken = $operand->createToken(TokenType::T_LANGUAGE_ID->value);
                     array_push($inst_tokens, $operandToken);
                 } else {
                     /* Navesti */
-                    if(!TokenUtil::validLabel($token)) {
-                        return array(INVALID);
+                    if(!TokenUtil::validLabel($token)) {                        
+                        return new Instruction(INVALID);
                     }
                                         
                     $operandToken = $operand->createToken(TokenType::T_LABEL->value);
                     array_push($inst_tokens, $operandToken);
                 }
             } else {
-                /* Promenna, konstanta */
-                if(TokenUtil::isVar(FrameType::$frameType, $token)) {                
+                /* 
+                 * Promenna
+                 * Konstanta
+                 */
+                if(TokenUtil::isVar(FrameType::$frameType, $token)) {
+                    /* Promenna */               
                     if(!TokenUtil::validVar($token)) {
-                        return array(INVALID);
+                        return new Instruction(INVALID);
                     }
                     
                     $operandToken = $operand->createToken(TokenType::T_VAR->value);
@@ -103,7 +120,7 @@ final class Scanner {
                 } else {
                     /* Konstanta */
                     if(!TokenUtil::validConst(DataType::$dataType, $token)) {
-                        return array(INVALID);
+                        return new Instruction(INVALID);
                     }                
                     
                     $operandToken = $operand->createToken(TokenType::T_CONST->value);
@@ -111,24 +128,27 @@ final class Scanner {
                 }
             }
         }
-        
-        return array(VALID, $inst_tokens);
+                
+        return new Instruction(VALID, $inst_tokens);
     }
 
     /*
-     * Funkce slouzi pro ziskani instrukce
+     * Metoda slouzi pro ziskani instrukce
      * pro syntakticky analyzator
      * 
      * 1. Nacteni vstupni intrukce
      * 2. Provedeni lexikalni analyzy vstupni instukce
      * 
-     * @return V pripade validniho zapisu instrukce array(VALID, tokeny instrukce),
-     *         jinak array(INVALID)
+     * @return V pripade validniho zapisu instanci tridy Instruction 
+     *         se statusem VALID a polem obsahujicim tokeny instrukce
+     *     
+     *         V pripade nevalidniho zapisu instanci tridy Instuction
+     *         se statusem INVALID  
      */
     public function getInstruction() {
         $instruction = StringUtil::readInstruction();
 
-        return self::lexicalAnalysis($instruction);    
+        return self::lexicalAnalysis($instruction);
     }    
 }
 

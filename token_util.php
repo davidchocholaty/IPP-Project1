@@ -1,18 +1,18 @@
 <?php
 /************************************************************************/
 /*                                                                      */
-/* Soubor: token_type.php                                               */
-/* Vytvoren: 2022-02-15                                                 */
-/* Posledni zmena: 2022-02-15                                           */
+/* Soubor: token_util.php                                               */
+/* Vytvoren: 2022-02-17                                                 */
+/* Posledni zmena: 2022-02-17                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
-/* Popis: Typy tokenu pro skripty lexikalni a syntakticke analyzy       */ 
+/* Popis: Skript se tridou obsahujici metody pro praci s tokeny         */ 
 /*                                                                      */
 /************************************************************************/
 
 class TokenUtil {
     /*
-     * Funkce slouzi pro urceni, zda dany token
+     * Metoda slouzi pro urceni, zda dany token
      * je operacni kod (nazev instrukce)
      * Pro operacni kod plati, ze nezalezi
      * na velikosti pismen
@@ -32,7 +32,7 @@ class TokenUtil {
     }
 
     /*
-     * Funkce slouzi pro urceni, zda dany token
+     * Metoda slouzi pro urceni, zda dany token
      * je datovy typ
      * 
      * @param $dataType Datove typy jazyka IPPcode22
@@ -50,7 +50,7 @@ class TokenUtil {
     }
 
     /*
-     * Funkce slouzi pro urceni, zda dany token
+     * Metoda slouzi pro urceni, zda dany token
      * je identifikator jazyka: '.IPPcode22', kdy
      * nezalezi na velikosti pismen
      * 
@@ -66,7 +66,7 @@ class TokenUtil {
     }
 
     /*
-     * Funkce slouzi pro urceni, zda dany token
+     * Metoda slouzi pro urceni, zda dany token
      * je promenna
      * 
      * @param $frameType Typ ramce
@@ -86,7 +86,7 @@ class TokenUtil {
     }
 
     /*
-     * Funkce slouzi pro overeni validniho zapisu nazvu promenne
+     * Metoda slouzi pro overeni validniho zapisu nazvu promenne
      * 
      * @param $var Nazev promenne
      * @return     V pripade validniho zapisu VALID (true), jinak INVALID (false)
@@ -102,7 +102,7 @@ class TokenUtil {
     }
 
     /*
-     * Funkce slouzi pro overeni validniho zapisu nazvu navesti
+     * Metoda slouzi pro overeni validniho zapisu nazvu navesti
      * 
      * @param $label Nazev navesti
      * @return     V pripade validniho zapisu VALID (true), jinak INVALID (false)
@@ -118,7 +118,7 @@ class TokenUtil {
     }
 
     /*
-     * Funkce slouzi pro overeni validniho zapisu konstanty
+     * Metoda slouzi pro overeni validniho zapisu konstanty
      *
      * @param $dataType Datove typy jazyka IPPcode22
      * @param $const     Konstanta
