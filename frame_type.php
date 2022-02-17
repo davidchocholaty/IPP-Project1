@@ -11,10 +11,12 @@
 /*                                                                      */
 /************************************************************************/
 
-$frame_type = array(
-    'GF',
-    'LF',
-    'TF',
-);
+final class FrameType {
+    public static $frameType = array(
+        'GF',
+        'LF',
+        'TF',
+    );
+}
 
 ?>

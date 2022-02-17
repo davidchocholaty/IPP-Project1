@@ -104,7 +104,7 @@ final class Scanner {
         }
 
         /* EOF */             
-        return array(token_type::T_EOF->value);
+        return array(TokenType::T_EOF);
     }
 
     /*
@@ -113,12 +113,12 @@ final class Scanner {
      * Pro operacni kod plati, ze nezalezi
      * na velikosti pismen
      * 
-     * @param $instruction_set Sada instrukci jazyka IPPcode22
+     * @param $instructionSet Sada instrukci jazyka IPPcode22
      * @param $token           Vstupni token
      * @return                 V pripade kladne odpovedi true, jinak false
      */ 
-    private static function isOpCode($instruction_set, $token) {
-        foreach(array_keys($instruction_set) as $op_code) {
+    private static function isOpCode($instructionSet, $token) {
+        foreach(array_keys($instructionSet) as $op_code) {
             if(strcasecmp($op_code, $token) == 0) {
                 return true;
             }
@@ -131,12 +131,12 @@ final class Scanner {
      * Funkce slouzi pro urceni, zda dany token
      * je datovy typ
      * 
-     * @param $data_type Datove typy jazyka IPPcode22
+     * @param $dataType Datove typy jazyka IPPcode22
      * @param $token     Vstupni token
      * @return           V pripade kladne odpovedi true, jinak false
      */ 
-    private static function isDataType($data_type, $token) {
-        foreach(array_keys($data_type) as $type) {
+    private static function isDataType($dataType, $token) {
+        foreach(array_keys($dataType) as $type) {
             if(strcmp($type, $token) == 0) {
                 return true;
             }
@@ -165,14 +165,14 @@ final class Scanner {
      * Funkce slouzi pro urceni, zda dany token
      * je promenna
      * 
-     * @param $frame_type Typ ramce
+     * @param $frameType Typ ramce
      * @param $token      Vstupni token
      * @return            V pripade kladne odpovedi true, jinak false
      */ 
-    private static function isVar($frame_type, $token) {
+    private static function isVar($frameType, $token) {
         $var_frame = explode('@', $token)[0];
 
-        foreach($frame_type as $frame) {
+        foreach($frameType as $frame) {
             if(strcmp($frame, $var_frame) == 0) {
                 return true;
             }
@@ -216,17 +216,17 @@ final class Scanner {
     /*
      * Funkce slouzi pro overeni validniho zapisu konstanty
      *
-     * @param $data_type Datove typy jazyka IPPcode22
+     * @param $dataType Datove typy jazyka IPPcode22
      * @param $const     Konstanta
      * @return           V pripade validniho zapisu VALID (true), jinak INVALID (false)
      */
-    private static function validConst($data_type, $const) {
+    private static function validConst($dataType, $const) {
         $const_parts = explode('@', $const, 2);
         
         $const_type = $const_parts[0];
         $const_val = $const_parts[1];
 
-        if(self::isDataType($data_type, $const_type)) {
+        if(self::isDataType($dataType, $const_type)) {
             switch($const_type) {
                 case 'int':
                     $pattern = "~^[+-]?[0-9]+$~";
@@ -261,19 +261,15 @@ final class Scanner {
      *                     jinak array(INVALID)
      */ 
     //TODO oop
-    private static function lexicalAnalysis($instruction) {
-        global $instruction_set;
-        global $data_type;
-        global $frame_type;
-        
+    private static function lexicalAnalysis($instruction) {                
         $inst_tokens = array();
 
-        $inst_set_keys = array_keys($instruction_set);        
+        $inst_set_keys = array_keys(InstructionSet::$instructionSet);        
 
         /* EOF */
-        if($instruction[0] == token_type::T_EOF->value) {
+        if($instruction[0] == TokenType::T_EOF) {
             $eof = new EndOfFileFactory();
-            $eofToken = $eof->createToken(token_type::T_EOF->value);
+            $eofToken = $eof->createToken(TokenType::T_EOF);
             return array(VALID, array($eofToken));
         }
 
@@ -283,15 +279,15 @@ final class Scanner {
         foreach($instruction as $token) {
             if(!str_contains($token, '@')) {
                 /* Operacni kod, typ, navesti, identifikator jazyka */
-                if(self::isOpCode($instruction_set, $token)) {
+                if(self::isOpCode(InstructionSet::$instructionSet, $token)) {
                     $opCodeIdx = array_search($token, $inst_set_keys);
                     $opCodeToken = $opCode->createToken($opCodeIdx);
                     array_push($inst_tokens, $opCodeToken);          
-                } elseif (self::isDataType($data_type, $token)) {                    
-                    $operandToken = $operand->createToken(token_type::T_TYPE->value);
+                } elseif (self::isDataType(DataType::$dataType, $token)) {                    
+                    $operandToken = $operand->createToken(TokenType::T_TYPE);
                     array_push($inst_tokens, $operandToken);                           
                 } elseif (self::isLanguageId($token)) {                    
-                    $operandToken = $operand->createToken(token_type::T_LANGUAGE_ID->value);
+                    $operandToken = $operand->createToken(TokenType::T_LANGUAGE_ID);
                     array_push($inst_tokens, $operandToken);
                 } else {
                     /* Navesti */
@@ -299,25 +295,25 @@ final class Scanner {
                         return array(INVALID);
                     }
                                         
-                    $operandToken = $operand->createToken(token_type::T_LABEL->value);
+                    $operandToken = $operand->createToken(TokenType::T_LABEL);
                     array_push($inst_tokens, $operandToken);
                 }
             } else {
                 /* Promenna, konstanta */
-                if(self::isVar($frame_type, $token)) {                
+                if(self::isVar(FrameType::$frameType, $token)) {                
                     if(!self::validVar($token)) {
                         return array(INVALID);
                     }
                     
-                    $operandToken = $operand->createToken(token_type::T_VAR->value);
+                    $operandToken = $operand->createToken(TokenType::T_VAR);
                     array_push($inst_tokens, $operandToken);
                 } else {
                     /* Konstanta */
-                    if(!self::validConst($data_type, $token)) {
+                    if(!self::validConst(DataType::$dataType, $token)) {
                         return array(INVALID);
                     }                
                     
-                    $operandToken = $operand->createToken(token_type::T_CONST->value);
+                    $operandToken = $operand->createToken(TokenType::T_CONST);
                     array_push($inst_tokens, $operandToken); 
                 }
             }

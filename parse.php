@@ -14,6 +14,7 @@
 include 'exit_code.php';
 include 'instruction_set.php';
 include 'token.php';
+include 'token_type.php';
 include 'data_type.php';
 include 'frame_type.php';
 include 'lexical_analysis.php';
@@ -47,14 +48,14 @@ if (array_key_exists("help", $options) ||
     if ($argc == ARGS_CNT) {
         if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {       
             print_help();            
-            exit(exit_code::EXIT_SUCCESS->value);
+            exit(ExitCode::EXIT_SUCCESS);
         }
         else {
-            exit(exit_code::WRONG_PARAM->value);            
+            exit(ExitCode::WRONG_PARAM);            
         }
     }
     else {
-        exit(exit_code::WRONG_PARAM->value);        
+        exit(ExitCode::WRONG_PARAM);        
     }
 }
 

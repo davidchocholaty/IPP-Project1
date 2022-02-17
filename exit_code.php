@@ -11,13 +11,13 @@
 /************************************************************************/
 
 /*********** CHYBOVE KODY **********/
-enum exit_code : int {
-    case EXIT_SUCCESS =  0;
-    case WRONG_PARAM  = 10;    
-    case BAD_HEADER   = 21;
-    case BAD_OP_CODE  = 22;
-    case LEX_STX_ERR  = 23;
-    case INTERN_ERR   = 99;
+final class ExitCode {
+    public const EXIT_SUCCESS =  0,
+                 WRONG_PARAM  = 10,
+                 BAD_HEADER   = 21,
+                 BAD_OP_CODE  = 22,
+                 LEX_STX_ERR  = 23,
+                 INTERN_ERR   = 99;    
 }
 
 ?>

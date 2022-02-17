@@ -41,8 +41,7 @@ final class Parser {
         return self::$instance;
     }
 
-    public function parse() {
-        global $instruction_set;
+    public function parse() {        
         /*
         for ($i = 1; $i <= 10; $i++) {
             $inst = get_instruction();
@@ -57,16 +56,16 @@ final class Parser {
             
             if($instruction[0] == INVALID) {
                 break;
-            } elseif($instruction[1][0]->getToken() == token_type::T_EOF->value) {
+            } elseif($instruction[1][0]->getToken() == TokenType::T_EOF) {
                 break;
-            } elseif($instruction[1][0]->getToken() == token_type::T_LANGUAGE_ID->value) {
+            } elseif($instruction[1][0]->getToken() == TokenType::T_LANGUAGE_ID) {
                 continue;
             }
     
             var_dump($instruction);
     
             /* instruction[1][0] -> Prvni cast instrukce je operacni kod */        
-           // $inst_operands = $instruction_set[$instruction[1][0]];
+           // $inst_operands = $instructionSet[$instruction[1][0]];
     /*
             $inst_ops_len = count($inst_operands);
     
