@@ -1,4 +1,3 @@
-TODO lexical_analysis -> readInstruction
 TODO lexical_analysis -> lexicalAnalysis
 
 Mozne navrhove vzory:

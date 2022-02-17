@@ -10,14 +10,14 @@
 /*                                                                      */
 /************************************************************************/
 
-final class TokenType {
-    public const T_OP_CODE     = 0,
-                 T_TYPE        = 1,
-                 T_LANGUAGE_ID = 2,
-                 T_LABEL       = 3,
-                 T_VAR         = 4,
-                 T_CONST       = 5,
-                 T_EOF         = 6;
+enum TokenType : int {    
+    case T_OP_CODE     = 0;
+    case T_TYPE        = 1;
+    case T_LANGUAGE_ID = 2;
+    case T_LABEL       = 3;
+    case T_VAR         = 4;
+    case T_CONST       = 5;
+    case T_EOF         = 6;
 }
 
 ?>

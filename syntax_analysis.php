@@ -56,9 +56,9 @@ final class Parser {
             
             if($instruction[0] == INVALID) {
                 break;
-            } elseif($instruction[1][0]->getToken() == TokenType::T_EOF) {
+            } elseif($instruction[1][0]->getToken() == TokenType::T_EOF->value) {
                 break;
-            } elseif($instruction[1][0]->getToken() == TokenType::T_LANGUAGE_ID) {
+            } elseif($instruction[1][0]->getToken() == TokenType::T_LANGUAGE_ID->value) {
                 continue;
             }
     

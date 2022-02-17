@@ -14,7 +14,7 @@
 abstract class Token {
     private $token;
 
-    abstract function getTokenType();
+    abstract function getType();
 
     public function __construct(int $token) {
         $this->token = $token;
@@ -30,7 +30,7 @@ class OpCode extends Token {
         parent::__construct($opCode);        
     }
 
-    public function getTokenType() {
+    public function getType() {
         return 'OPCODE';
     }
 }
@@ -40,7 +40,7 @@ class Operand extends Token {
         parent::__construct($operand);        
     }
 
-    public function getTokenType() {
+    public function getType() {
         return 'OPERAND';
     }
 }
@@ -50,7 +50,7 @@ class EndOfFile extends Token {
         parent::__construct($eof);        
     }
 
-    public function getTokenType() {
+    public function getType() {
         return 'EOF';
     }
 }
