@@ -50,6 +50,16 @@ class TokenUtil {
     }
 
     /*
+     * Metoda slouzi pro ziskani datoveho typu konstanty     
+     *      
+     * @param $token Vstupni token konstanty
+     * @return       Datovy typ vstupni konstanty
+     */ 
+    public static function getConstDataType($token) {
+        return explode('@', $token)[0];
+    }
+
+    /*
      * Metoda slouzi pro urceni, zda dany token
      * je identifikator jazyka: '.IPPcode22', kdy
      * nezalezi na velikosti pismen

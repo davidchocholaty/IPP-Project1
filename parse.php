@@ -38,6 +38,22 @@ function printHelp() {
     //echo "-c, --comments        Saves to statistic file count of comments.\n";
 }
 
+function createXml($prog) {
+    $root = array(
+        'rootElementName' => 'program',
+        '_attributes' => [
+            'language' => 'IPPcode22',
+        ],
+    );
+    
+    return Array2Xml::convert($prog, $root);
+}
+
+function printXml($xml) {
+    //TODO
+    echo $xml;
+}
+
 /******************** HLAVNI SKRIPT ********************/
 
 /************ PARAMETRY ************/
@@ -63,6 +79,11 @@ if (array_key_exists("help", $options) ||
 }
 
 $parser = Parser::getInstance();
-$parser->parse();
+$prog = $parser->parse();
+
+//var_dump($prog);
+
+$xml = createXml($prog);
+printXml($xml);
 
 ?>

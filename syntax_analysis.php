@@ -51,66 +51,50 @@ final class Parser {
     /*
      * Metoda provadejici syntaktickou analyzu vstupnich instrukci
      */
-    public function parse() {        
+    public function parse() {
         $scanner = Scanner::getInstance();
+        $prog = array('instruction' => []);
 
         $instruction = $scanner->getInstruction();
         $instTokens = $instruction->getInstTokens();
 
-        if($instTokens[0]->getToken() !== TokenType::T_LANGUAGE_ID->value) {
+        if($instTokens[0]->getTokenCode() !== TokenType::T_LANGUAGE_ID->value) {
             // TODO error
         }
 
-        while(true) {
+        $order = 1;
+
+        while(true) {            
             $instruction = $scanner->getInstruction();
             $instTokens = $instruction->getInstTokens();                        
             
-            if($instruction->getStatus() == INVALID) {                
+            if($instruction->getStatus() == INVALID) {
+                //TODO error
                 break;
             } elseif(strcmp($instTokens[0]->getType(), 'EOF') == 0) {                
                 break;
             } elseif(strcmp($instTokens[0]->getType(), 'OPCODE') !== 0) {
                 //TODO error
-            }
+            }          
 
-            $array = [
-                'GoodGuy' => [
-                    '_attributes' => ['attr1' => 'value'],
-                    'name' => 'Luke Skywalker',
-                    'weapon' => 'Lightsaber'
-                ],
-                'BadGuy' => [
-                    'name' => 'Sauron',
-                    'weapon' => 'Evil Eye'
-                ],
-                'TheSurvivor' => [
-                    '_attributes' => ['house'=>'Hogwarts'],
-                    '_value' => 'Harry Potter'
-                ]
-            ];
-
-            $result = Array2Xml::convert($array);
-            echo $result;
-            break;
-
-            //var_dump($instruction);
-
-            /* Prvni cast instrukce je operacni kod */
-            $instOpCodeIdx = $instTokens[0]->getToken();
-
-            $instOpCode = InstructionSet::$instructionCodes[$instOpCodeIdx];
+            /* Prvni cast instrukce je operacni kod */                        
+            $instOpCode = $instTokens[0]->getTokenVal();
             $instOperands = InstructionSet::$instructionSet[$instOpCode];
            
             /* Nespravny pocet operandu */
-
             if(count($instOperands) !== count($instTokens) - 1) {
                 //TODO error
             }
 
+            /* Pridani instrukce do vystupniho pole pro xml */            
+            //$progInstruction = array('_attributes' => ['order' => $order, 'opcode' => $instOpCode],'name' => 'Luke Skywalker', 'weapon' => 'Lightsaber');
+            $progInstruction = array('_attributes' => ['order' => $order, 'opcode' => $instOpCode]);
+
             $operandIdx = 1;
 
             foreach($instOperands as $operand) {
-                $operandToken = $instTokens[$operandIdx]->getToken();
+                $operandToken = $instTokens[$operandIdx]->getTokenCode();
+                $operandTokenVal = $instTokens[$operandIdx]->getTokenVal();
 
                 if(strcmp($operandToken, 'OPERAND') !== 0) {
                     //TODO error
@@ -118,31 +102,60 @@ final class Parser {
 
                 switch($operand) {
                     case 'v': // var
-                        if($operandToken != TokenType::T_VAR->value) {
-                            // TODO error
+                        if($operandToken !== TokenType::T_VAR->value) {
+                            // TODO error                         
                         }
+                        
+                        $arg = array('_attributes' => ['type' => 'var']);
                         break;
-                    case 's': // symb  
-                        if($operandToken != TokenType::T_VAR->value &&
-                           $operandToken != TokenType::T_CONST->value) {
+                    case 's': // symb                          
+                        if($operandToken !== TokenType::T_VAR->value &&
+                           $operandToken !== TokenType::T_CONST->value) {
                             // TODO error
                         }
+
+                        if($operandToken == TokenType::T_VAR->value) {
+                            /* Promenna */
+                            $arg = array('_attributes' => ['type' => 'var']);
+                        } else {
+                            /* Konstanta */
+                            $type = TokenUtil::getConstDataType($operandTokenVal);
+                            $arg = array('_attributes' => ['type' => $type]);
+                        }
+
+                        //XML type="var", "bool", "string", "int", "nil", ...
+                        //$arg = array('_attributes' => ['type' => 'TODO']);
                         break;
-                    case 'l': // label 
-                        if($operandToken != TokenType::T_LABEL->value) {
+                    case 'l': // label
+                        if($operandToken !== TokenType::T_LABEL->value) {
                             // TODO error
                         }
-                        break;                    
+
+                        $arg = array('_attributes' => ['type' => 'label']);
+                        break;
                     case 't': // type  
-                        if($operandToken != TokenType::T_TYPE->value) {
+                        if($operandToken !== TokenType::T_TYPE->value) {
                             // TODO error
                         }
+
+                        $arg = array('_attributes' => ['type' => 'type']);
                         break;
                 }
 
+                $argTag = 'arg' . $operandIdx;
+                $arg += array('_value' => $operandTokenVal);
+                $progInstruction += array($argTag => $arg);
+
+                //var_dump($progInstruction);
+
                 $operandIdx++;
-            }                
+            }            
+            
+            array_push($prog['instruction'], $progInstruction);
+            $order++;
         }
+
+        return $prog;
     }
 }
 

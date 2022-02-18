@@ -63,7 +63,7 @@ final class Scanner {
 
         /* EOF */
         if($instruction[0] == TokenType::T_EOF->value) {            
-            $eofToken = new EndOfFile(TokenType::T_EOF->value);
+            $eofToken = EndOfFile::getInstance(TokenType::T_EOF->value);
             return new Instruction(VALID, array($eofToken));
         }
 
@@ -80,26 +80,23 @@ final class Scanner {
                  */
                 if(TokenUtil::isOpCode(InstructionSet::$instructionCodes, $token)) {                    
                     /* Operacni kod */
-
-                    /* Ziskani indexu (kodu) instrukce v instrukcni sade*/
-                    $opCodeIdx = array_search($token, InstructionSet::$instructionCodes);
-                    $opCodeToken = $opCode->createToken($opCodeIdx);
-                    array_push($instTokens, $opCodeToken);          
+                    $opCodeToken = $opCode->createToken(TokenType::T_OP_CODE->value, $token);
+                    array_push($instTokens, $opCodeToken);
                 } elseif (TokenUtil::isDataType(DataType::$dataType, $token)) {
                     /* Typ */
-                    $operandToken = $operand->createToken(TokenType::T_TYPE->value);
-                    array_push($instTokens, $operandToken);                           
-                } elseif (TokenUtil::isLanguageId($token)) {                    
-                    /* Identifikator jazyka */
-                    $operandToken = $operand->createToken(TokenType::T_LANGUAGE_ID->value);
+                    $operandToken = $operand->createToken(TokenType::T_TYPE->value, $token);
                     array_push($instTokens, $operandToken);
+                } elseif (TokenUtil::isLanguageId($token)) {
+                    /* Identifikator jazyka */
+                    $languageIdToken = LanguageIdentifier::getInstance(TokenType::T_LANGUAGE_ID->value);
+                    array_push($instTokens, $languageIdToken);
                 } else {
                     /* Navesti */
-                    if(!TokenUtil::validLabel($token)) {                            
+                    if(!TokenUtil::validLabel($token)) {
                         return new Instruction(INVALID);
                     }
-                                        
-                    $operandToken = $operand->createToken(TokenType::T_LABEL->value);
+
+                    $operandToken = $operand->createToken(TokenType::T_LABEL->value, $token);
                     array_push($instTokens, $operandToken);
                 }
             } else {
@@ -113,7 +110,7 @@ final class Scanner {
                         return new Instruction(INVALID);
                     }
                     
-                    $operandToken = $operand->createToken(TokenType::T_VAR->value);
+                    $operandToken = $operand->createToken(TokenType::T_VAR->value, $token);
                     array_push($instTokens, $operandToken);
                 } else {
                     /* Konstanta */
@@ -121,7 +118,7 @@ final class Scanner {
                         return new Instruction(INVALID);
                     }                
                     
-                    $operandToken = $operand->createToken(TokenType::T_CONST->value);
+                    $operandToken = $operand->createToken(TokenType::T_CONST->value, $token);
                     array_push($instTokens, $operandToken); 
                 }
             }

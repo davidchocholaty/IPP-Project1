@@ -13,14 +13,15 @@
 /*
  * Abstraktni trida reprezentujici token
  * 
- * Pouzity navrhovy vzor: Abstraktni tovarna
+ * Pouzite navrhove vzory: Abstraktni tovarna, Singleton
  */
 abstract class Token {
-    private $token;
+    private $tokenCode;
+    private $tokenVal;
 
     /*
      * Abstraktni metoda pro ziskani typu tokenu
-     */ 
+     */
     abstract function getType();
 
     /*
@@ -28,8 +29,9 @@ abstract class Token {
      * 
      * @param $token Kod tokenu
      */ 
-    public function __construct(int $token) {
-        $this->token = $token;
+    public function __construct(int $tokenCode, string $tokenVal) {
+        $this->tokenCode = $tokenCode;
+        $this->tokenVal = $tokenVal;
     }
 
     /*
@@ -37,8 +39,12 @@ abstract class Token {
      * 
      * @return Navraci token
      */ 
-    public function getToken() {
-        return $this->token;
+    public function getTokenCode() {
+        return $this->tokenCode;
+    }
+
+    public function getTokenVal() {
+        return $this->tokenVal;
     }
 }
 
@@ -51,8 +57,8 @@ class OpCode extends Token {
      * 
      * @param $opCode Kod operacniho kodu
      */ 
-    public function __construct(int $opCode){
-        parent::__construct($opCode);        
+    public function __construct(int $opCode, string $opCodeVal){
+        parent::__construct($opCode, $opCodeVal);
     }
 
     /*
@@ -74,8 +80,8 @@ class Operand extends Token {
      * 
      * @param $operand Kod operandu
      */
-    public function __construct(int $operand){
-        parent::__construct($operand);        
+    public function __construct(int $operand, string $operandVal){
+        parent::__construct($operand, $operandVal);
     }
 
     /*
@@ -92,13 +98,28 @@ class Operand extends Token {
  * Trida reprezentujici konec vstupniho toku
  */ 
 class EndOfFile extends Token {
+    private static $instance = NULL;
     /*
      * Konstruktor
      * 
-     * @param $operand Kod konce vstupniho souboru
+     * @param $eof Kod konce vstupniho souboru
      */   
-    public function __construct(int $eof){
-        parent::__construct($eof);        
+    private function __construct(int $eofCode){
+        parent::__construct($eofCode, '');        
+    }
+
+    private function __clone() {        
+    }
+
+    public function __wakeup() {        
+    }
+
+    public static function getInstance(int $eofCode) {
+        if(self::$instance == NULL) {
+            self::$instance = new EndOfFile($eofCode);
+        }
+
+        return self::$instance;
     }
 
     /*
@@ -111,6 +132,41 @@ class EndOfFile extends Token {
     }
 }
 
+class LanguageIdentifier extends Token {
+    private static $instance = NULL;
+    /*
+     * Konstruktor
+     * 
+     * @param $languageId 
+     */   
+    private function __construct(int $languageIdCode){
+        parent::__construct($languageIdCode, '');
+    }
+
+    private function __clone() {        
+    }
+
+    public function __wakeup() {        
+    }
+
+    public static function getInstance(int $languageIdCode) {
+        if(self::$instance == NULL) {
+            self::$instance = new LanguageIdentifier($languageIdCode);
+        }
+
+        return self::$instance;
+    }
+
+    /*
+     * Metoda pro ziskani typu instance tokenu
+     * 
+     * @return Navraci typ instance tokenu
+     */ 
+    public function getType() {
+        return 'LANGUAGE_ID';
+    }
+}
+
 /*
  * Abstraktni trida reprezentujici tovarnu tokenu
  */
@@ -120,7 +176,7 @@ abstract class TokenFactory {
      * 
      * @param $token Kod tokenu
      */
-    abstract public function createToken(int $token) : Token;
+    abstract public function createToken(int $tokenCode, string $tokenVal) : Token;
 }
 
 /*
@@ -133,8 +189,8 @@ class OpCodeFactory extends TokenFactory {
      * @param $token Kod tokenu operacniho kodu
      * @return       Nova instance operacniho kodu
      */
-    public function createToken(int $token) : Token {
-        return new OpCode($token);
+    public function createToken(int $tokenCode, string $tokenVal) : Token {
+        return new OpCode($tokenCode, $tokenVal);
     }
 }
 
@@ -148,8 +204,8 @@ class OperandFactory extends TokenFactory {
      * @param $token Kod tokenu operandu
      * @return       Nova instance operandu
      */
-    public function createToken(int $token) : Token {
-        return new Operand($token);
+    public function createToken(int $tokenCode, string $tokenVal) : Token {
+        return new Operand($tokenCode, $tokenVal);
     }
 }
 

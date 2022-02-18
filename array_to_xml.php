@@ -33,7 +33,7 @@ class Array2Xml {
         $this->document = new DOMDocument($xmlVersion, $xmlEncoding);
         $this->document->formatOutput = $formatOutput;
 
-        if ($this->isArrayAllKeySequential($array) && ! empty($array)) {
+        if ($this->isArrayAllKeySequential($array) && !empty($array)) {
             throw new DOMException('Invalid Character Error');
         }
 
