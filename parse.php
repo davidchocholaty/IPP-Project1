@@ -94,4 +94,6 @@ $prog = Parser::getParseProg();
 $xml = createXml($prog);
 printXml($xml);
 
+exit(ExitCode::EXIT_SUCCESS->value);
+
 ?>
