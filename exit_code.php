@@ -13,7 +13,7 @@
 /*********** CHYBOVE KODY **********/
 enum ExitCode : int {
     case EXIT_SUCCESS =  0;
-    case WRONG_PARAM  = 10;    
+    case WRONG_PARAM  = 10;
     case BAD_HEADER   = 21;
     case BAD_OP_CODE  = 22;
     case LEX_STX_ERR  = 23;

@@ -79,7 +79,15 @@ if (array_key_exists("help", $options) ||
 }
 
 $parser = Parser::getInstance();
-$prog = $parser->parse();
+$parser->parse();
+
+$status = Parser::getStatus();
+
+if($status !== ExitCode::EXIT_SUCCESS->value) {
+    exit($status);
+}
+
+$prog = Parser::getParseProg();
 
 //var_dump($prog);
 

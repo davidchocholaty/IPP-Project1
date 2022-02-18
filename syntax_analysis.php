@@ -17,12 +17,16 @@
  */
 final class Parser {
     private static $instance = NULL;
+    private static $status;
+    private static $parseProg;
 
     /*
      * Zabraneni vytvareni vice instanci
      * s pomoci soukromeho konstruktoru
      */
     private function __construct() {
+        self::$status = ExitCode::INTERN_ERR->value;
+        self::$parseProg = array();
     }
 
     /*
@@ -48,6 +52,14 @@ final class Parser {
         return self::$instance;
     }
 
+    public static function getStatus() {
+        return self::$status;
+    }
+
+    public static function getParseProg() {
+        return self::$parseProg;
+    }
+
     /*
      * Metoda provadejici syntaktickou analyzu vstupnich instrukci
      */
@@ -58,32 +70,39 @@ final class Parser {
         $instruction = $scanner->getInstruction();
         $instTokens = $instruction->getInstTokens();
 
-        if($instTokens[0]->getTokenCode() !== TokenType::T_LANGUAGE_ID->value) {
-            // TODO error
+        /* Hlavicka s identifikatorem jazyka */
+        if($instruction->getStatus() !== ExitCode::EXIT_SUCCESS->value ||
+           $instTokens[0]->getTokenCode() !== TokenType::T_LANGUAGE_ID->value) {            
+            self::$status = ExitCode::BAD_HEADER->value;
+            return;
         }
 
         $order = 1;
 
-        while(true) {            
+        while(true) {
             $instruction = $scanner->getInstruction();
             $instTokens = $instruction->getInstTokens();                        
             
-            if($instruction->getStatus() == INVALID) {
-                //TODO error
-                break;
+            $instStatus = $instruction->getStatus();
+
+            if($instStatus == ExitCode::BAD_OP_CODE->value) {                
+                self::$status = $instStatus;
+                return;
+            } elseif($instStatus !== ExitCode::EXIT_SUCCESS->value) {                
+                self::$status = $instStatus;
+                return;
             } elseif(strcmp($instTokens[0]->getType(), 'EOF') == 0) {                
                 break;
-            } elseif(strcmp($instTokens[0]->getType(), 'OPCODE') !== 0) {
-                //TODO error
-            }          
+            }            
 
             /* Prvni cast instrukce je operacni kod */                        
             $instOpCode = $instTokens[0]->getTokenVal();
             $instOperands = InstructionSet::$instructionSet[$instOpCode];
            
             /* Nespravny pocet operandu */
-            if(count($instOperands) !== count($instTokens) - 1) {
-                //TODO error
+            if(count($instOperands) !== count($instTokens) - 1) {                
+                self::$status = ExitCode::LEX_STX_ERR->value;
+                return;
             }
 
             /* Pridani instrukce do vystupniho pole pro xml */            
@@ -93,17 +112,19 @@ final class Parser {
             $operandIdx = 1;
 
             foreach($instOperands as $operand) {
+                $operandType = $instTokens[$operandIdx]->getType();
                 $operandToken = $instTokens[$operandIdx]->getTokenCode();
                 $operandTokenVal = $instTokens[$operandIdx]->getTokenVal();
 
-                if(strcmp($operandToken, 'OPERAND') !== 0) {
-                    //TODO error
+                if(strcmp($operandType, 'OPERAND') !== 0) {
+                    self::$status = ExitCode::LEX_STX_ERR->value;
+                    return;
                 }
 
                 switch($operand) {
                     case 'v': // var
                         if($operandToken !== TokenType::T_VAR->value) {
-                            // TODO error                         
+                            
                         }
                         
                         $arg = array('_attributes' => ['type' => 'var']);
@@ -111,7 +132,8 @@ final class Parser {
                     case 's': // symb                          
                         if($operandToken !== TokenType::T_VAR->value &&
                            $operandToken !== TokenType::T_CONST->value) {
-                            // TODO error
+                            self::$status = ExitCode::LEX_STX_ERR->value;
+                            return;
                         }
 
                         if($operandToken == TokenType::T_VAR->value) {
@@ -128,14 +150,16 @@ final class Parser {
                         break;
                     case 'l': // label
                         if($operandToken !== TokenType::T_LABEL->value) {
-                            // TODO error
+                            self::$status = ExitCode::LEX_STX_ERR->value;
+                            return;
                         }
 
                         $arg = array('_attributes' => ['type' => 'label']);
                         break;
                     case 't': // type  
                         if($operandToken !== TokenType::T_TYPE->value) {
-                            // TODO error
+                            self::$status = ExitCode::LEX_STX_ERR->value;
+                            return;
                         }
 
                         $arg = array('_attributes' => ['type' => 'type']);
@@ -144,18 +168,17 @@ final class Parser {
 
                 $argTag = 'arg' . $operandIdx;
                 $arg += array('_value' => $operandTokenVal);
-                $progInstruction += array($argTag => $arg);
-
-                //var_dump($progInstruction);
+                $progInstruction += array($argTag => $arg);                
 
                 $operandIdx++;
-            }            
+            }
             
             array_push($prog['instruction'], $progInstruction);
             $order++;
         }
 
-        return $prog;
+        self::$status = ExitCode::EXIT_SUCCESS->value;
+        self::$parseProg = $prog;
     }
 }
 

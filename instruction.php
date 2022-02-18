@@ -49,7 +49,7 @@ class Instruction {
     }
 
     /*
-     * Metoda pro ziskani statusu instrukce (VALID nebo INVALID)
+     * Metoda pro ziskani statusu instrukce
      * 
      * @return Status instrukce
      */ 
