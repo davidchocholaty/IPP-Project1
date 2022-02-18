@@ -73,6 +73,26 @@ final class Parser {
                 //TODO error
             }
 
+            $array = [
+                'GoodGuy' => [
+                    '_attributes' => ['attr1' => 'value'],
+                    'name' => 'Luke Skywalker',
+                    'weapon' => 'Lightsaber'
+                ],
+                'BadGuy' => [
+                    'name' => 'Sauron',
+                    'weapon' => 'Evil Eye'
+                ],
+                'TheSurvivor' => [
+                    '_attributes' => ['house'=>'Hogwarts'],
+                    '_value' => 'Harry Potter'
+                ]
+            ];
+
+            $result = Array2Xml::convert($array);
+            echo $result;
+            break;
+
             //var_dump($instruction);
 
             /* Prvni cast instrukce je operacni kod */

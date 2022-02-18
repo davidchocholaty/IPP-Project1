@@ -11,6 +11,7 @@
 /*                                                                      */
 /************************************************************************/
 
+include 'array_to_xml.php';
 include 'exit_code.php';
 include 'instruction_set.php';
 include 'definitions.php';
