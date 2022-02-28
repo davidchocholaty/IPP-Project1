@@ -31,7 +31,7 @@ include 'syntax_analysis.php';
 function printHelp() {
     //TODO print echo Metoda     
     echo "parse.php napoveda:\n";
-    echo "-h, --help              Vypise tuto napovedu.\n";
+    echo "-h, --help              Vypise tuto napovedu\n";
     //echo "-v, --verbose         Prints debug information.\n";
     //echo "-s FILE, --stats FILE Select file for statistics. One of the following parameters is required.\n";
     //echo "-l, --loc             Saves to statistic file count of instructions.\n";
@@ -57,9 +57,9 @@ function printXml($xml) {
 /******************** HLAVNI SKRIPT ********************/
 
 /************ PARAMETRY ************/
-$shortopts = "h";
-$longopts = array("help");
-$options = getopt($shortopts, $longopts);
+$shortOpts = "h";
+$longOpts = array("help");
+$options = getopt($shortOpts, $longOpts);
 
 if (array_key_exists("help", $options) ||
     array_key_exists("h", $options)) {
