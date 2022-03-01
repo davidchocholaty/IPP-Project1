@@ -19,10 +19,20 @@ class StringUtil {
      * komentare nasledujiciho za samotnou instrukci
      * 
      * @params $inputLine Vstupni radek
-     * @return             Vstupni radek bez komentare
+     * @return            Vstupni radek bez komentare
      */
     private static function removeComment($inputLine) {
         return explode('#', $inputLine)[0];
+    }
+
+    /*
+     * Metoda slouzi pro odstraneni bilych znaku na zacatku vstupniho radku
+     * 
+     * @param $inputLine Vstupni radek
+     * @return           Vstupni radek bez bilych znaku na zacatku
+     */
+    private static function trimBegWhiteSpc($inputLine) {
+        return ltrim($inputLine);
     }
 
     /*
@@ -30,7 +40,7 @@ class StringUtil {
      * radku nebo bilych znaku na konci vstupniho radku
      * 
      * @param $inputLine Vstupni radek obsahujici znak noveho radku
-     * @return            Vstupni radek bez znaku noveho radku
+     * @return           Vstupni radek bez znaku noveho radku
      */
     private static function trimLineEnd($inputLine) {
         $noNewLine = rtrim($inputLine, "\n");
@@ -58,14 +68,15 @@ class StringUtil {
      * @return Nactena instrukce
      */
     public static function readInstruction() {
-        while(($inputLine = fgets(STDIN)) !== false){
-            if (str_starts_with($inputLine, '#') ||
-                str_starts_with($inputLine, '\n')) {
-
+        while(($inputLine = fgets(STDIN)) !== false){            
+            if (str_starts_with($inputLine, '#') ||                
+                preg_match("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", $inputLine)) {
+                    
                 continue;
             } else {
                 $inputLine = self::removeComment($inputLine);
                 $inputLine = self::trimLineEnd($inputLine);
+                $inputLine = self::trimBegWhiteSpc($inputLine);
 
                 return self::str2Arr($inputLine);
             }

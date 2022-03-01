@@ -59,10 +59,10 @@ final class Scanner {
      *                     se statusem odpovidajicim dane chybe
      */    
     private static function lexicalAnalysis($instruction) {
-        $instTokens = array();        
+        $instTokens = array();      
 
         /* EOF */
-        if($instruction[0] == TokenType::T_EOF->value) {            
+        if($instruction[0] == TokenType::T_EOF->value) {          
             $eofToken = EndOfFile::getInstance(TokenType::T_EOF->value);
             return new Instruction(ExitCode::EXIT_SUCCESS->value, array($eofToken));
         }

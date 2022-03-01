@@ -63,22 +63,22 @@ final class Parser {
     /*
      * Metoda provadejici syntaktickou analyzu vstupnich instrukci
      */
-    public function parse() {
+    public function parse() {        
         $scanner = Scanner::getInstance();
         $prog = array('instruction' => []);
 
         $instruction = $scanner->getInstruction();
         $instTokens = $instruction->getInstTokens();
-
+        
         /* Hlavicka s identifikatorem jazyka */
         if($instruction->getStatus() !== ExitCode::EXIT_SUCCESS->value ||
-           $instTokens[0]->getTokenCode() !== TokenType::T_LANGUAGE_ID->value) {            
+           $instTokens[0]->getTokenCode() !== TokenType::T_LANGUAGE_ID->value) {                        
             self::$status = ExitCode::BAD_HEADER->value;
-            return;
+            return;            
         }
-
+        
         $order = 1;
-
+        
         while(true) {
             $instruction = $scanner->getInstruction();
             $instTokens = $instruction->getInstTokens();                        
@@ -86,27 +86,40 @@ final class Parser {
             $instStatus = $instruction->getStatus();
 
             if($instStatus == ExitCode::BAD_OP_CODE->value) {                
-                self::$status = $instStatus;
+                self::$status = $instStatus;                
                 return;
             } elseif($instStatus !== ExitCode::EXIT_SUCCESS->value) {                
-                self::$status = $instStatus;
+                self::$status = $instStatus;                
                 return;
-            } elseif(strcmp($instTokens[0]->getType(), 'EOF') == 0) {                
-                break;
-            }            
+            } elseif(strcmp($instTokens[0]->getType(), 'EOF') == 0) {
+                if ($prog == array('instruction' => [])) {
+                    $prog = array();
+                }
 
+                break;
+            }
+                        
             /* Prvni cast instrukce je operacni kod */                        
             $instOpCode = $instTokens[0]->getTokenVal();
+            $instOpCode = strtoupper($instOpCode);
+
+            /* Pokud se operacni kod nenachazi v instrukcni sade, jedna se o chybu */
+            if (!in_array($instOpCode, InstructionSet::$instructionCodes)) {
+                self::$status = ExitCode::BAD_OP_CODE->value;
+                return;
+            }
+
             $instOperands = InstructionSet::$instructionSet[$instOpCode];
-           
+                        
             /* Nespravny pocet operandu */
             if(count($instOperands) !== count($instTokens) - 1) {                
                 self::$status = ExitCode::LEX_STX_ERR->value;
                 return;
             }
-
+            
             /* Pridani instrukce do vystupniho pole pro xml */            
             //$progInstruction = array('_attributes' => ['order' => $order, 'opcode' => $instOpCode],'name' => 'Luke Skywalker', 'weapon' => 'Lightsaber');
+
             $progInstruction = array('_attributes' => ['order' => $order, 'opcode' => $instOpCode]);
 
             $operandIdx = 1;
@@ -120,7 +133,7 @@ final class Parser {
                     self::$status = ExitCode::LEX_STX_ERR->value;
                     return;
                 }
-
+                
                 switch($operand) {
                     case 'v': // var
                         if($operandToken !== TokenType::T_VAR->value) {
@@ -143,6 +156,7 @@ final class Parser {
                             /* Konstanta */
                             $type = TokenUtil::getConstDataType($operandTokenVal);
                             $arg = array('_attributes' => ['type' => $type]);
+                            $operandTokenVal = explode('@', $operandTokenVal)[1];
                         }
 
                         //XML type="var", "bool", "string", "int", "nil", ...
@@ -171,8 +185,10 @@ final class Parser {
                 $progInstruction += array($argTag => $arg);                
 
                 $operandIdx++;
-            }
+            }            
+
             
+
             array_push($prog['instruction'], $progInstruction);
             $order++;
         }
