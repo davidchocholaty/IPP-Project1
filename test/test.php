@@ -16,17 +16,18 @@ include 'html_gen.php';
 include 'directory_structure.php';
 include 'parse_tester.php';
 include 'int_tester.php';
+include 'test_type.php';
 
 class Tester {
     private $arguments;
     private $dirStruct;
 
     public function __construct() {
-        $arguments = new Argument();
-        $dirStruct = new DirectoryStructure();
+        $this->arguments = new Argument();
+        $this->dirStruct = new DirectoryStructure();
     }
 
-    public function initTester($argc) {
+    public function initTester($argc) {        
         $status = $this->arguments->parseArgs($argc);
 
         if ($status !== ExitCode::EXIT_SUCCESS->value) {
@@ -40,9 +41,42 @@ class Tester {
     }
 
     public function run() {
+        if ($this->arguments->$parseOnlyFlag) {
+            $testType = TestType::PARSE_ONLY->value;
+            $parseTester = new ParseTester();
+        } elseif ($this->arguments->$intOnlyFlag) {
+            $testType = TestType::INT_ONLY->value;
+            $intTester = new IntTester();            
+        } else {
+            $testType = TestType::BOTH->value;
+            $parseTester = new ParseTester();
+            $intTester = new IntTester();            
+        }
+
         foreach ($this->dirStruct->$dirs as $dir) {
             foreach ($this->dirStruct->$files as $file) {
-                
+                $src = $dir.$file['testName'].'.src';
+                $in  = $dir.$file['testName'].'.in';                
+                $out = $dir.$file['testName'].'.out';
+                $rc = $dir.$file['testName'].'.rc';
+
+                switch($testType) {
+                    case TestType::PARSE_ONLY->value:
+                        $parseTester->run();
+                        break;
+
+                    case TestType::INT_ONLY->value:
+                        $intTester->run();
+                        break;
+
+                    case TestType::BOTH->value:
+                        $parseTester->run();
+                        $intTester->run();
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -52,26 +86,6 @@ class Tester {
         $gen->generateHTMLPage();
     }
 }
-
-
-
-
-//$arguments = new Argument();
-
-//$status = $arguments->parseArgs($argc);
-
-//if ($status !== ExitCode::EXIT_SUCCESS->value) {
-//    exit($status);
-//}
-
-//$iter = new Iterator();
-//$iter->init($arguments->dir, $arguments->recFlag);
-
-
-
-
-
-
 
 /******************** HLAVNI SKRIPT ********************/
 
@@ -84,7 +98,7 @@ if ($status !== ExitCode::EXIT_SUCCESS->value) {
 }
 
 $tester->run();
-$htmlPage = $tester->createPage();
+//$htmlPage = $tester->createPage();
 
 exit(ExitCode::EXIT_SUCCESS->value);
 

@@ -53,8 +53,31 @@ class DirectoryStructure {
             $testName = preg_replace('/^(.*\/)?(.+)\.src$/','\2', $test[0]);
             $dir = preg_replace('/^(.*\/).+\.(in|out|rc|src)$/','\1', $test[0]);
 
+            $this->files[$folder][$name]['testName'] = $testName;
             $this->addTestDir($dir);
             $this->checkFiles($dir, $testName);
+        }
+    }
+
+    public function saveTest($testDir,
+                             $testName,
+                             $testType,
+                             $parser,
+                             $int,
+                             $done) {
+        switch($testType) {
+            case TestType::PARSE_ONLY->value:
+                $this->files[$testDir][$testName]['parser'] = $parser;
+                $this->files[$testDir][$testName]['done'] = $done;
+                break;
+
+            case TestType::INT_ONLY->value:
+                $this->files[$testDir][$testName]['int'] = $int;
+                $this->files[$testDir][$testName]['done'] = $done;
+                break;            
+
+            default:
+                break;
         }
     }
 }
