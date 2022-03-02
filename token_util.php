@@ -131,8 +131,8 @@ class TokenUtil {
      * Metoda slouzi pro overeni validniho zapisu konstanty
      *
      * @param $dataType Datove typy jazyka IPPcode22
-     * @param $const     Konstanta
-     * @return           V pripade validniho zapisu VALID (true), jinak INVALID (false)
+     * @param $const    Konstanta
+     * @return          V pripade validniho zapisu VALID (true), jinak INVALID (false)
      */
     public static function validConst($dataType, $const) {
         $constParts = explode('@', $const, 2);
@@ -159,10 +159,9 @@ class TokenUtil {
             }
             
             if($str && !preg_match('~(\\\\($|\p{S}|\p{P}\p{Z}|\p{M}|\p{L}|\p{C})|(\\\\[0-9]{0,2}($|\p{S}|\p{P}\p{Z}|\p{M}|\p{L}|\p{C}))| |#)~', $constVal)) {
-                   	return VALID;
+            	return VALID;
             } elseif(preg_match($pattern, $constVal)) {        
-					return VALID;
-        			
+				return VALID;        			
 			}
         }
 

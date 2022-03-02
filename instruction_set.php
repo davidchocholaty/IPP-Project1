@@ -98,7 +98,7 @@ final class InstructionSet {
     'EQ'          => ['v', 's', 's'],
     'AND'         => ['v', 's', 's'],
     'OR'          => ['v', 's', 's'],
-    'NOT'         => ['v', 's', 's'],
+    'NOT'         => ['v', 's'],
     'INT2CHAR'    => ['v', 's'],
     'STRI2INT'    => ['v', 's', 's'],
     /* Vstupne vystupni instrukce */
