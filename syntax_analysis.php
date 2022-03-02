@@ -137,7 +137,8 @@ final class Parser {
                 switch($operand) {
                     case 'v': // var
                         if($operandToken !== TokenType::T_VAR->value) {
-                            
+                            self::$status = ExitCode::LEX_STX_ERR->value;
+                            return;                            
                         }
                         
                         $arg = array('_attributes' => ['type' => 'var']);

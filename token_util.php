@@ -141,6 +141,8 @@ class TokenUtil {
         $constVal = $constParts[1];
 
         if(self::isDataType($dataType, $constType)) {
+        	$str = false;
+        
             switch($constType) {
                 case 'int':
                     $pattern = "~^[+-]?[0-9]+$~";
@@ -149,19 +151,19 @@ class TokenUtil {
                     $pattern = "~^(true|false)$~";
                     break;
                 case 'string':
-                    /* ?! -> negace vyrazu   */
-                    //TODO backslash in string
-                    //$pattern = "~(?!(\\\\[0-9]{0,2}($|\p{L}|\p{M}|\p{S}|\p{P}\p{Z}|\p{C}| )|\\\\[0-9]{4,}))~u";
-                    $pattern = "~(?:[^\s#\\\\]|(?:\\\\\d{3}))*~u";
-                    break;
+                	$str = true;
+                	break;                    
                 case 'nil';
                     $pattern = "~^(nil)$~";
                     break;
             }
-                        
-            if(preg_match($pattern, $constVal)) {        
-                return VALID;
-            }        
+            
+            if($str && !preg_match('~(\\\\($|\p{S}|\p{P}\p{Z}|\p{M}|\p{L}|\p{C})|(\\\\[0-9]{0,2}($|\p{S}|\p{P}\p{Z}|\p{M}|\p{L}|\p{C}))| |#)~', $constVal)) {
+                   	return VALID;
+            } elseif(preg_match($pattern, $constVal)) {        
+					return VALID;
+        			
+			}
         }
 
         return INVALID;
