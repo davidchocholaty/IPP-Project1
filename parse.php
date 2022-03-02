@@ -78,8 +78,7 @@ if (array_key_exists("help", $options) ||
     }
 }
 
-$parser = Parser::getInstance();
-$parser->parse();
+Parser::parse();
 
 $status = Parser::getStatus();
 
@@ -88,8 +87,6 @@ if($status !== ExitCode::EXIT_SUCCESS->value) {
 }
 
 $prog = Parser::getParseProg();
-
-//var_dump($prog);
 
 $xml = createXml($prog);
 printXml($xml);

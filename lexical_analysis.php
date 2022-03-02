@@ -12,42 +12,8 @@
 
 /*
  * Trida reprezentujici lexikalni analyzator
- * 
- * Pouziti navrhovy vzor: Singleton
  */
 final class Scanner {
-    private static $instance = NULL;
-
-    /*
-     * Zabraneni vytvareni vice instanci
-     * s pomoci soukromeho konstruktoru
-     */
-    private function __construct() {
-    }
-
-    /*
-     * Zabraneni klonovani instance
-     */
-    private function __clone() {
-    }
-
-    /*
-     * Zabraneni zruseni serializace
-     */
-    public function __wakeup() {        
-    }
-
-    /*
-     * Metoda pro vytvoreni/ziskani instance
-     */ 
-    public static function getInstance() {
-        if(self::$instance == NULL) {
-            self::$instance = new Scanner();
-        }
-
-        return self::$instance;
-    }
-
     /*
      * Metoda provadejici lexikalni analyzu vstupni instrukce
      * 
@@ -156,7 +122,7 @@ final class Scanner {
      *         V pripade nevalidniho zapisu instanci tridy Instuction
      *         se statusem INVALID
      */
-    public function getInstruction() {        
+    public static function getInstruction() {        
         $instruction = StringUtil::readInstruction();
 
         return self::lexicalAnalysis($instruction);

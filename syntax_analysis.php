@@ -12,45 +12,10 @@
 
 /*
  * Trida reprezentujici syntakticky analyzator
- * 
- * Pouziti navrhovy vzor: Singleton
  */
 final class Parser {
-    private static $instance = NULL;
     private static $status;
     private static $parseProg;
-
-    /*
-     * Zabraneni vytvareni vice instanci
-     * s pomoci soukromeho konstruktoru
-     */
-    private function __construct() {
-        self::$status = ExitCode::INTERN_ERR->value;
-        self::$parseProg = array();
-    }
-
-    /*
-     * Zabraneni klonovani instance
-     */
-    private function __clone() {
-    }
-
-    /*
-     * Zabraneni zruseni serializace
-     */
-    public function __wakeup() {        
-    }
-
-    /*
-     * Metoda pro vytvoreni/ziskani instance
-     */ 
-    public static function getInstance() {
-        if(self::$instance == NULL) {
-            self::$instance = new Parser();
-        }
-
-        return self::$instance;
-    }
 
     public static function getStatus() {
         return self::$status;
@@ -63,11 +28,13 @@ final class Parser {
     /*
      * Metoda provadejici syntaktickou analyzu vstupnich instrukci
      */
-    public function parse() {        
-        $scanner = Scanner::getInstance();
+    public static function parse() {
+	self::$status = ExitCode::INTERN_ERR->value;
+	self::$parseProg = array();
+    
         $prog = array('instruction' => []);
 
-        $instruction = $scanner->getInstruction();
+        $instruction = Scanner::getInstruction();
         $instTokens = $instruction->getInstTokens();
         
         /* Hlavicka s identifikatorem jazyka */
@@ -80,7 +47,7 @@ final class Parser {
         $order = 1;
         
         while(true) {
-            $instruction = $scanner->getInstruction();
+            $instruction = Scanner::getInstruction();
             $instTokens = $instruction->getInstTokens();                        
             
             $instStatus = $instruction->getStatus();
