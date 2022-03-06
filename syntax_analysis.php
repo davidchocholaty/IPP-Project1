@@ -3,7 +3,7 @@
 /*                                                                      */
 /* Soubor: syntax_analysis.php                                          */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-17                                           */
+/* Posledni zmena: 2022-03-06                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Skript obsahujici syntaktickou analyzu jazyka IPPcode22       */
@@ -84,9 +84,7 @@ final class Parser {
                 return;
             }
             
-            /* Pridani instrukce do vystupniho pole pro xml */            
-            //$progInstruction = array('_attributes' => ['order' => $order, 'opcode' => $instOpCode],'name' => 'Luke Skywalker', 'weapon' => 'Lightsaber');
-
+            /* Pridani instrukce do vystupniho pole pro xml */
             $progInstruction = array('_attributes' => ['order' => $order, 'opcode' => $instOpCode]);
 
             $operandIdx = 1;
@@ -127,8 +125,6 @@ final class Parser {
                             $operandTokenVal = explode('@', $operandTokenVal)[1];
                         }
 
-                        //XML type="var", "bool", "string", "int", "nil", ...
-                        //$arg = array('_attributes' => ['type' => 'TODO']);
                         break;
                     case 'l': // label
                         if($operandToken !== TokenType::T_LABEL->value) {

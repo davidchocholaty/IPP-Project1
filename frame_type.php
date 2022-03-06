@@ -7,7 +7,7 @@
 /* Posledni zmena: 2022-02-17                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
-/* Popis: Type ramcu jazyka IPPcode22                                   */ 
+/* Popis: Typy ramcu jazyka IPPcode22                                   */ 
 /*                                                                      */
 /************************************************************************/
 

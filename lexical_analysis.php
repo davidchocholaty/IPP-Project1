@@ -3,7 +3,7 @@
 /*                                                                      */
 /* Soubor: lexical_analysis.php                                         */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-17                                           */
+/* Posledni zmena: 2022-03-06                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Skript obsahujici lexikalni analyzu jazyka IPPcode22          */

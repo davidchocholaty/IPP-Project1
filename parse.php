@@ -3,7 +3,7 @@
 /*                                                                      */
 /* Soubor: parse.php                                                    */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-17                                           */
+/* Posledni zmena: 2022-03-06                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Hlavni skript lexikalni a syntakticke analyzy                 */
@@ -31,13 +31,8 @@ include 'syntax_analysis.php';
  * Funkce slouzi pro vypis napovedy na standardni vystup
  */
 function printHelp() {
-    //TODO print echo Metoda     
     echo "parse.php napoveda:\n";
     echo "-h, --help              Vypise tuto napovedu\n";
-    //echo "-v, --verbose         Prints debug information.\n";
-    //echo "-s FILE, --stats FILE Select file for statistics. One of the following parameters is required.\n";
-    //echo "-l, --loc             Saves to statistic file count of instructions.\n";
-    //echo "-c, --comments        Saves to statistic file count of comments.\n";
 }
 
 function createXml($prog) {
@@ -52,7 +47,6 @@ function createXml($prog) {
 }
 
 function printXml($xml) {
-    //TODO
     echo $xml;
 }
 
@@ -80,6 +74,7 @@ if (array_key_exists("help", $options) ||
     }
 }
 
+/************* ANALYZA *************/
 Parser::parse();
 
 $status = Parser::getStatus();

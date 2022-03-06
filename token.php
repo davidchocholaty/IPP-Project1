@@ -3,7 +3,7 @@
 /*                                                                      */
 /* Soubor: token.php                                                    */
 /* Vytvoren: 2022-02-16                                                 */
-/* Posledni zmena: 2022-02-17                                           */
+/* Posledni zmena: 2022-03-06                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Skript se tridou reprezentujici tokeny                        */ 

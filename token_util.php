@@ -3,7 +3,7 @@
 /*                                                                      */
 /* Soubor: token_util.php                                               */
 /* Vytvoren: 2022-02-17                                                 */
-/* Posledni zmena: 2022-02-17                                           */
+/* Posledni zmena: 2022-03-06                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Skript se tridou obsahujici metody pro praci s tokeny         */ 
@@ -159,10 +159,10 @@ class TokenUtil {
             }
             
             if($str && !preg_match('~(\\\\($|\p{S}|\p{P}\p{Z}|\p{M}|\p{L}|\p{C})|(\\\\[0-9]{0,2}($|\p{S}|\p{P}\p{Z}|\p{M}|\p{L}|\p{C}))| |#)~', $constVal)) {
-            	return VALID;
+                return VALID;
             } elseif(preg_match($pattern, $constVal)) {        
-				return VALID;        			
-			}
+                return VALID;        			
+            }
         }
 
         return INVALID;
