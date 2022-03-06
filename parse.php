@@ -35,6 +35,12 @@ function printHelp() {
     echo "-h, --help              Vypise tuto napovedu\n";
 }
 
+/*
+ * Funkce pro vytvoreni XML reprezentace vstupniho kodu
+ *
+ * @param $prog Pole obsahujici vstupni kod ve formatu pro prevod
+ * @return      XML reprezentace vstupniho pole
+ */
 function createXml($prog) {
     $root = array(
         'rootElementName' => 'program',
@@ -46,6 +52,11 @@ function createXml($prog) {
     return Array2Xml::convert($prog, $root);
 }
 
+/*
+ * Funkce pro vypis XML reprezentace
+ *
+ * @param $xml XML reprezentace
+ */
 function printXml($xml) {
     echo $xml;
 }
