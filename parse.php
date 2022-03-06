@@ -3,7 +3,7 @@
 /*                                                                      */
 /* Soubor: parse.php                                                    */
 /* Vytvoren: 2022-02-14                                                 */
-/* Posledni zmena: 2022-02-14                                           */
+/* Posledni zmena: 2022-03-06                                           */
 /* Autor: David Chocholaty <xchoch09@stud.fit.vutbr.cz>                 */
 /* Projekt: Uloha 1 pro predmet IPP                                     */
 /* Popis: Hlavni skript lexikalni a syntakticke analyzy                 */
@@ -11,53 +11,94 @@
 /*                                                                      */
 /************************************************************************/
 
-include 'lexical_analysis.php'
-include 'syntax_analysis.php'
-include 'instruction_set.php'
+ini_set('display_errors', 'stderr');
 
-/************* DEFINICE ************/
-define("ARGS_CNT", 2);
-define("ARG_IDX", 1);
+include 'array_to_xml.php';
+include 'exit_code.php';
+include 'instruction_set.php';
+include 'definitions.php';
+include 'token.php';
+include 'token_type.php';
+include 'data_type.php';
+include 'frame_type.php';
+include 'instruction.php';
+include 'token_util.php';
+include 'string_util.php';
+include 'lexical_analysis.php';
+include 'syntax_analysis.php';
 
-/*********** CHYBOVE KODY **********/
-enum exit_code : int {
-    case EXIT_SUCCESS = 0;
-    case WRONG_PARAM = 10;    
-    case BAD_HEADER = 21;
-    case BAD_OP_CODE = 22;
-    case LEX_STX_ERR = 23;
-    case INTERN_ERR = 99;
+/*
+ * Funkce slouzi pro vypis napovedy na standardni vystup
+ */
+function printHelp() {
+    echo "parse.php napoveda:\n";
+    echo "-h, --help              Vypise tuto napovedu\n";
 }
 
+/*
+ * Funkce pro vytvoreni XML reprezentace vstupniho kodu
+ *
+ * @param $prog Pole obsahujici vstupni kod ve formatu pro prevod
+ * @return      XML reprezentace vstupniho pole
+ */
+function createXml($prog) {
+    $root = array(
+        'rootElementName' => 'program',
+        '_attributes' => [
+            'language' => 'IPPcode22',
+        ],
+    );
+    
+    return Array2Xml::convert($prog, $root);
+}
+
+/*
+ * Funkce pro vypis XML reprezentace
+ *
+ * @param $xml XML reprezentace
+ */
+function printXml($xml) {
+    echo $xml;
+}
+
+/******************** HLAVNI SKRIPT ********************/
+
 /************ PARAMETRY ************/
-$shortopts = "h";
-$longopts = array("help");
-$options = getopt($shortopts, $longopts);
+$shortOpts = "h";
+$longOpts = array("help");
+$options = getopt($shortOpts, $longOpts);
 
 if (array_key_exists("help", $options) ||
     array_key_exists("h", $options)) {
 
-    if ($argc == ARGS_CNT)
-    {
-        if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {            
-            echo "parse.php napoveda:\n";
-            echo "-h, --help              Vypise tuto napovedu.\n";
-            //echo "-v, --verbose         Prints debug information.\n";
-            //echo "-s FILE, --stats FILE Select file for statistics. One of the following parameters is required.\n";
-            //echo "-l, --loc             Saves to statistic file count of instructions.\n";
-            //echo "-c, --comments        Saves to statistic file count of comments.\n";
-            
-            exit(exit_code::EXIT_SUCCESS->value);            
+    if ($argc == ARGS_CNT) {
+        if($argv[ARG_IDX] == "-h" || $argv[ARG_IDX] == "--help") {       
+            printHelp();            
+            exit(ExitCode::EXIT_SUCCESS->value);
         }
         else {
-            exit(exit_code::WRONG_PARAM->value);
+            exit(ExitCode::WRONG_PARAM->value);
         }
     }
-    else {        
-        exit(exit_code::WRONG_PARAM->value);
+    else {
+        exit(ExitCode::WRONG_PARAM->value);
     }
 }
 
-parser();
+/************* ANALYZA *************/
+Parser::parse();
+
+$status = Parser::getStatus();
+
+if($status !== ExitCode::EXIT_SUCCESS->value) {
+    exit($status);
+}
+
+$prog = Parser::getParseProg();
+
+$xml = createXml($prog);
+printXml($xml);
+
+exit(ExitCode::EXIT_SUCCESS->value);
 
 ?>
