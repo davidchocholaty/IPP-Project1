@@ -29,7 +29,7 @@ final class Scanner {
 
         /* EOF */
         if($instruction[0] == TokenType::T_EOF->value) {          
-            $eofToken = EndOfFile::getInstance(TokenType::T_EOF->value);
+            $eofToken = new EndOfFile(TokenType::T_EOF->value);
             return new Instruction(ExitCode::EXIT_SUCCESS->value, array($eofToken));
         }
 
@@ -46,7 +46,7 @@ final class Scanner {
                 return new Instruction(ExitCode::BAD_HEADER->value);
             }
 
-            $languageIdToken = LanguageIdentifier::getInstance(TokenType::T_LANGUAGE_ID->value);
+            $languageIdToken = new LanguageIdentifier(TokenType::T_LANGUAGE_ID->value);
 
             return new Instruction(ExitCode::EXIT_SUCCESS->value, array($languageIdToken));
 

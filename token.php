@@ -13,7 +13,7 @@
 /*
  * Abstraktni trida reprezentujici token
  * 
- * Pouzite navrhove vzory: Abstraktni tovarna, Singleton
+ * Pouzity navrhovy vzor: Abstraktni tovarna
  */
 abstract class Token {
     private $tokenCode;
@@ -98,29 +98,14 @@ class Operand extends Token {
  * Trida reprezentujici konec vstupniho toku
  */ 
 class EndOfFile extends Token {
-    private static $instance = NULL;
     /*
      * Konstruktor
      * 
      * @param $eof Kod konce vstupniho souboru
      */   
-    private function __construct(int $eofCode){
+    public function __construct(int $eofCode){
         parent::__construct($eofCode, '');        
-    }
-
-    private function __clone() {        
-    }
-
-    public function __wakeup() {        
-    }
-
-    public static function getInstance(int $eofCode) {
-        if(self::$instance == NULL) {
-            self::$instance = new EndOfFile($eofCode);
-        }
-
-        return self::$instance;
-    }
+    }   
 
     /*
      * Metoda pro ziskani typu instance tokenu
@@ -139,22 +124,8 @@ class LanguageIdentifier extends Token {
      * 
      * @param $languageId 
      */   
-    private function __construct(int $languageIdCode){
+    public function __construct(int $languageIdCode){
         parent::__construct($languageIdCode, '');
-    }
-
-    private function __clone() {        
-    }
-
-    public function __wakeup() {        
-    }
-
-    public static function getInstance(int $languageIdCode) {
-        if(self::$instance == NULL) {
-            self::$instance = new LanguageIdentifier($languageIdCode);
-        }
-
-        return self::$instance;
     }
 
     /*
